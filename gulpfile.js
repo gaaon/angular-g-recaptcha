@@ -12,23 +12,30 @@ var banner = ['/**'
 ,   ''
 ].join('\n');
 
-gulp.task('build:header', function() {
-    return gulp.src('src/recaptcha.js')
-        .pipe($.header(banner, {pkg: pkg}))
+
+gulp.task('build:coffee', function() {
+    return gulp.src('src/recaptcha.coffee')
+        .pipe($.coffee({bare:true, 'no-header':true}))
         .pipe($.rename('angular-g-recaptcha.js'))
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('build:uglify', function() {
-    return gulp.src('src/recaptcha.js')
+gulp.task('build:header', ['build:coffee'], function() {
+    return gulp.src('angular-g-recaptcha.js')
+        .pipe($.header(banner, {pkg: pkg}))
+        .pipe(gulp.dest('./'));
+});
+
+gulp.task('build:uglify', ['build:coffee'], function() {
+    return gulp.src('angular-g-recaptcha.js')
         .pipe($.uglify())
         .pipe($.header(banner, {pkg: pkg}))
-        .pipe($.rename('angular-g-recaptcha.min.js'))
+        .pipe($.rename({suffix: '.min'}))
         .pipe(gulp.dest('./'));
 });
 
 gulp.task('watch', function() {
-    gulp.watch(['src/recaptcha.js'], ['build']);
+    gulp.watch(['src/recaptcha.coffee'], ['build']);
 })
 
 gulp.task('build', ['build:header', 'build:uglify']);

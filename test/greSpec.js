@@ -1,5 +1,7 @@
-describe('angular-g-recaptcha', function() {
-    it('should', function() {
-        [1,2,3].should.have.length(3);
-    })    
-});
+if( window.sitekey === undefined ) {
+    throw new Error('Please add your sitekey.js.');
+}
+
+var sitekey = window.sitekey;
+var angular = window.angular;
+
