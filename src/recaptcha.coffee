@@ -1,7 +1,7 @@
 ((window, angular)->
     # grecaptchaProvider
     grecaptchaProvider = ->
-        # private grecapthca object
+        # private grecaptcha object
         _grecaptcha     = undefined
         
         # private parameters object
@@ -16,17 +16,17 @@
         # a method name called when recaptcha api script will be loaded
         _onloadMethod    = "onRecaptchaApiLoaded"
         
-        # delete global grecapthca or not
-        _deleteGrecaptha = off
-        
+        # a method that set parameters
         @setParameters = (params)->
             _parameters = params
-            return
+            self
         
+        # a method that set languageCode
         @setLanguageCode = (languageCode)->
             _languageCode = languageCode
-            return
-            
+            self
+        
+        # a method that create recaptcha script
         _createScript = ($document)->
             scriptTag = $document[0].createElement 'script'
             scriptTag.type = 'text/javascript';
@@ -40,16 +40,18 @@
         
         this.$get = ($document, $q, $window, $rootScope)->
             'ngInject'
-            {
-                init : ->
-                    _grecaptcha = $window.grecaptcha if $window.grecaptcha
-                    return $q.resolve _grecaptcha if _grecaptcha
+            return new ->
+                _self = @
+                
+                @init = ->
+                    return $q.resolve() if _grecaptcha
                     
                     promise = $q (resolve, reject)->
                         $window[_onloadMethod] = ->
-                            _grecaptcha = $window.grecaptcha
                             $rootScope.$apply ->
-                                resolve _grecaptcha
+                                _self.setGrecaptcha($window.grecaptcha)
+                                resolve()
+                                return
                             return
                         return
                         
@@ -57,38 +59,53 @@
                     
                     promise
                     
-                render : (element, params, onSuccess, onExpire)->
+                @render = (element, params, onSuccess, onExpire)->
                     _params = angular.extend {}, _parameters, params
+                    _promise = $q.resolve()
                     
                     if not _params.sitekey
-                        throw new Error 'Please set your sitekey by parameters.'
+                        return $q.reject 'Please set your sitekey by parameters.'
                         
-                    if not _grecaptcha
-                        throw new Error 'Please init grecaptcha.'
+                    _promise = _self.init() if not _grecaptcha
                         
-                    _params.callback = onSuccess || angular.noop
-                    _params['expired-callback'] = onExpire || angular.noop
+                    _params.callback = (response)->
+                        $rootScope.$apply ->
+                            (onSuccess or angular.noop)(response)
+                            return
+                        return
+                        
+                    _params['expired-callback'] = ->
+                        $rootScope.$apply ->
+                            (onExpire || angular.noop)()
+                            return
+                        return
                     
-                    _grecaptcha.render element, _params
-                
-                getParameters : ->
+                    _promise.then ->
+                        _grecaptcha.render element, _params
+                    
+                @getParameters = ->
                     _parameters
                     
-                getGrecaptcha : ->
+                @getGrecaptcha = ->
                     _grecaptcha
                     
-                getLanguageCode : ->
+                @getLanguageCode = ->
                     _languageCode
-                
-                setLanguageCode : (languageCode)->
+                    
+                @setLanguageCode = (languageCode)->
                     if _languageCode isnt languageCode
                         _grecaptcha = undefined
-                    return
+                    _self
                 
-                setParameters : (param)->
+                @setParameters = (param)->
                     angular.extend _parameters, param
-                    return
-            }
+                    _self
+                
+                @setGrecaptcha = (gre)->
+                     _grecaptcha = gre
+                    _self
+                
+                return
         return
         
     app = angular.module('grecaptcha', [])

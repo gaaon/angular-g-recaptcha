@@ -7,17 +7,19 @@
 (function(window, angular) {
   var app, grecaptchaProvider;
   grecaptchaProvider = function() {
-    var _createScript, _grecaptcha, _languageCode, _parameters, onloadMethod, self;
+    var _createScript, _grecaptcha, _languageCode, _onloadMethod, _parameters, self;
     _grecaptcha = void 0;
     _parameters = {};
     _languageCode = void 0;
     self = this;
-    onloadMethod = "onRecaptchaApiLoaded";
+    _onloadMethod = "onRecaptchaApiLoaded";
     this.setParameters = function(params) {
       _parameters = params;
+      return self;
     };
     this.setLanguageCode = function(languageCode) {
       _languageCode = languageCode;
+      return self;
     };
     _createScript = function($document) {
       var s, scriptTag;
@@ -25,63 +27,78 @@
       scriptTag.type = 'text/javascript';
       scriptTag.async = true;
       scriptTag.defer = true;
-      scriptTag.src = ("//www.google.com/recaptcha/api.js?onload=" + onloadMethod + "&render=explicit") + (_languageCode ? "&h1" + _languageCode : "");
+      scriptTag.src = ("//www.google.com/recaptcha/api.js?onload=" + _onloadMethod + "&render=explicit") + (_languageCode ? "&h1" + _languageCode : "");
       s = $document[0].querySelector('body');
       s.appendChild(scriptTag);
     };
     this.$get = function($document, $q, $window, $rootScope) {
       'ngInject';
-      return {
-        init: function() {
-          var getAndFree, promise;
-          getAndFree = function() {
-            _grecaptcha = $window.grecaptcha;
-            $window.grecaptcha = void 0;
-          };
-          if ($window.grecaptcha) {
-            getAndFree();
-          }
+      return new function() {
+        var _self;
+        _self = this;
+        this.init = function() {
+          var promise;
           if (_grecaptcha) {
-            return $q.resolve(_grecaptcha);
+            return $q.resolve();
           }
           promise = $q(function(resolve, reject) {
-            $window[onloadMethod] = function() {
-              getAndFree();
+            $window[_onloadMethod] = function() {
               $rootScope.$apply(function() {
-                return resolve(_grecaptcha);
+                _self.setGrecaptcha($window.grecaptcha);
+                resolve();
               });
             };
           });
           _createScript($document);
           return promise;
-        },
-        render: function(element, params, onSuccess, onExpire) {
-          var _params;
+        };
+        this.render = function(element, params, onSuccess, onExpire) {
+          var _params, _promise;
           _params = angular.extend({}, _parameters, params);
+          _promise = $q.resolve();
           if (!_params.sitekey) {
-            throw new Error('Please set your sitekey by parameters.');
+            return $q.reject('Please set your sitekey by parameters.');
           }
           if (!_grecaptcha) {
-            throw new Error('Please init grecaptcha.');
+            _promise = _self.init();
           }
-          _params.callback = onSuccess || angular.noop;
-          _params['expired-callback'] = onExpire || angular.noop;
-          return _grecaptcha.render(element, _params);
-        },
-        getParameters: function() {
+          _params.callback = function(response) {
+            $rootScope.$apply(function() {
+              (onSuccess || angular.noop)(response);
+            });
+          };
+          _params['expired-callback'] = function() {
+            $rootScope.$apply(function() {
+              (onExpire || angular.noop)();
+            });
+          };
+          return _promise.then(function() {
+            return _grecaptcha.render(element, _params);
+          });
+        };
+        this.getParameters = function() {
           return _parameters;
-        },
-        getGrecaptcha: function() {
+        };
+        this.getGrecaptcha = function() {
           return _grecaptcha;
-        },
-        getLanguageCode: function() {
+        };
+        this.getLanguageCode = function() {
           return _languageCode;
-        },
-        setLanguageCode: function(languageCode) {
+        };
+        this.setLanguageCode = function(languageCode) {
           if (_languageCode !== languageCode) {
             _grecaptcha = void 0;
           }
-        }
+          return _self;
+        };
+        this.setParameters = function(param) {
+          angular.extend(_parameters, param);
+          return _self;
+        };
+        this.setGrecaptcha = function(gre) {
+          return _grecaptcha = gre;
+        };
+        _self;
       };
     };
   };
