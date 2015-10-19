@@ -90,7 +90,7 @@
                     
                     _promise.then ->
                         _grecaptcha.render element, _params
-                    
+                        
                 @getParameters = ->
                     _parameters
                     
@@ -132,7 +132,7 @@
                 param = $parse(attr.grecaptcha)(scope)
                 el.html grecaptcha.getLoadingMessage()
                 
-                grecaptcha.init().then ->
+                scope.promise = grecaptcha.init().then ->
                     el.empty()
                     grecaptcha.render el[0], param
                     , (res)->
@@ -142,7 +142,6 @@
                         console.log('recaptcha expired!');
                         return
                     
-                    return
                 return
         }
         
