@@ -23,7 +23,7 @@ module.exports = function(config) {
     
     // list of files / patterns to load in the browser
     files: [
-      'sitekey.js',
+      'test/sitekey.js',
       'bower_components/angular/angular.js',
       'angular-g-recaptcha.js',
       'bower_components/angular-mocks/angular-mocks.js',

@@ -114,16 +114,18 @@
       };
     }];
   };
-  grecaptchaDirective = ["grecaptcha", function(grecaptcha) {
+  grecaptchaDirective = ["grecaptcha", "$parse", function(grecaptcha, $parse) {
     'ngInject';
     return {
       restrict: 'A',
       require: '^ngModel',
       link: function(scope, el, attr, ngModelCtrl) {
+        var param;
+        param = $parse(attr.grecaptcha)(scope);
         el.html(grecaptcha.getLoadingMessage());
         grecaptcha.init().then(function() {
           el.empty();
-          grecaptcha.render(el[0], {}, function(res) {
+          grecaptcha.render(el[0], param, function(res) {
             ngModelCtrl.$setViewValue(res);
           }, function() {
             console.log('recaptcha expired!');

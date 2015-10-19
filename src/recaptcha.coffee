@@ -16,6 +16,9 @@
         # a method name called when recaptcha api script will be loaded
         _onloadMethod    = "onRecaptchaApiLoaded"
         
+        # a loading message
+        _loadingMessage  = "loading.."
+        
         # a method that set parameters
         @setParameters = (params)->
             _parameters = params
@@ -26,6 +29,11 @@
             _languageCode = languageCode
             self
         
+        # a method that set loading message
+        @setLoadingMessage = (message)->
+            _loadingMessage = message
+            self
+            
         # a method that create recaptcha script
         _createScript = ($document)->
             scriptTag = $document[0].createElement 'script'
@@ -92,6 +100,9 @@
                 @getLanguageCode = ->
                     _languageCode
                     
+                @getLoadingMessage = ->
+                    _loadingMessage
+                    
                 @setLanguageCode = (languageCode)->
                     if _languageCode isnt languageCode
                         _grecaptcha = undefined
@@ -105,9 +116,37 @@
                      _grecaptcha = gre
                     _self
                 
+                @setLoadingMessage = (message)->
+                    _loadingMessage = message
+                    _self
+                    
                 return
         return
+    
+    grecaptchaDirective = (grecaptcha, $parse)->
+        'ngInject'
+        {
+            restrict: 'A'
+            require: '^ngModel'
+            link: (scope, el, attr, ngModelCtrl)->
+                param = $parse(attr.grecaptcha)(scope)
+                el.html grecaptcha.getLoadingMessage()
+                
+                grecaptcha.init().then ->
+                    el.empty()
+                    grecaptcha.render el[0], param
+                    , (res)->
+                        ngModelCtrl.$setViewValue res
+                        return
+                    , ->
+                        console.log('recaptcha expired!');
+                        return
+                    
+                    return
+                return
+        }
         
     app = angular.module('grecaptcha', [])
     .provider 'grecaptcha', grecaptchaProvider
+    .directive 'grecaptcha', grecaptchaDirective
 )(window, window.angular)

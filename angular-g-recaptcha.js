@@ -5,20 +5,25 @@
  * @license MIT
  */
 (function(window, angular) {
-  var app, grecaptchaProvider;
+  var app, grecaptchaDirective, grecaptchaProvider;
   grecaptchaProvider = function() {
-    var _createScript, _grecaptcha, _languageCode, _onloadMethod, _parameters, self;
+    var _createScript, _grecaptcha, _languageCode, _loadingMessage, _onloadMethod, _parameters, self;
     _grecaptcha = void 0;
     _parameters = {};
     _languageCode = void 0;
     self = this;
     _onloadMethod = "onRecaptchaApiLoaded";
+    _loadingMessage = "loading..";
     this.setParameters = function(params) {
       _parameters = params;
       return self;
     };
     this.setLanguageCode = function(languageCode) {
       _languageCode = languageCode;
+      return self;
+    };
+    this.setLoadingMessage = function(message) {
+      _loadingMessage = message;
       return self;
     };
     _createScript = function($document) {
@@ -31,7 +36,7 @@
       s = $document[0].querySelector('body');
       s.appendChild(scriptTag);
     };
-    this.$get = function($document, $q, $window, $rootScope) {
+    this.$get = ["$document", "$q", "$window", "$rootScope", function($document, $q, $window, $rootScope) {
       'ngInject';
       return new function() {
         var _self;
@@ -85,6 +90,9 @@
         this.getLanguageCode = function() {
           return _languageCode;
         };
+        this.getLoadingMessage = function() {
+          return _loadingMessage;
+        };
         this.setLanguageCode = function(languageCode) {
           if (_languageCode !== languageCode) {
             _grecaptcha = void 0;
@@ -99,8 +107,32 @@
           return _grecaptcha = gre;
         };
         _self;
+        this.setLoadingMessage = function(message) {
+          _loadingMessage = message;
+          return _self;
+        };
       };
-    };
+    }];
   };
-  return app = angular.module('grecaptcha', []).provider('grecaptcha', grecaptchaProvider);
+  grecaptchaDirective = ["grecaptcha", "$parse", function(grecaptcha, $parse) {
+    'ngInject';
+    return {
+      restrict: 'A',
+      require: '^ngModel',
+      link: function(scope, el, attr, ngModelCtrl) {
+        var param;
+        param = $parse(attr.grecaptcha)(scope);
+        el.html(grecaptcha.getLoadingMessage());
+        grecaptcha.init().then(function() {
+          el.empty();
+          grecaptcha.render(el[0], param, function(res) {
+            ngModelCtrl.$setViewValue(res);
+          }, function() {
+            console.log('recaptcha expired!');
+          });
+        });
+      }
+    };
+  }];
+  return app = angular.module('grecaptcha', []).provider('grecaptcha', grecaptchaProvider).directive('grecaptcha', grecaptchaDirective);
 })(window, window.angular);

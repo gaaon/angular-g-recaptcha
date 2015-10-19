@@ -1,7 +1,12 @@
-const   gulp    = require('gulp')
-,       path    = require('path')
-,       $       = require('gulp-load-plugins')()
-,       pkg     = require('./package.json');
+const   gulp        = require('gulp')
+,       path        = require('path')
+,       $           = require('gulp-load-plugins')({
+    rename: {
+        'gulp-util': 'gutil'
+    }
+})
+,       pkg         = require('./package.json')
+,       browserSync = require('browser-sync').create();
 
 var banner = ['/**'
 ,   ' * @name <%= pkg.name %>'
@@ -16,6 +21,7 @@ var banner = ['/**'
 gulp.task('build:coffee', function() {
     return gulp.src('src/recaptcha.coffee')
         .pipe($.coffee({bare:true, 'no-header':true}))
+        .pipe($.ngAnnotate({add:true, remove:true}))
         .pipe($.rename('angular-g-recaptcha.js'))
         .pipe(gulp.dest('./'));
 });
@@ -23,7 +29,8 @@ gulp.task('build:coffee', function() {
 gulp.task('build:header', ['build:coffee'], function() {
     return gulp.src('angular-g-recaptcha.js')
         .pipe($.header(banner, {pkg: pkg}))
-        .pipe(gulp.dest('./'));
+        .pipe(gulp.dest('./'))
+        .pipe($.copy('example/scripts'));
 });
 
 gulp.task('build:uglify', ['build:coffee'], function() {
@@ -34,8 +41,29 @@ gulp.task('build:uglify', ['build:coffee'], function() {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('watch', function() {
-    gulp.watch(['src/recaptcha.coffee'], ['build']);
+gulp.task('browserSync:init', function(){
+    browserSync.init({
+        proxy: 'localhost:8000',
+        port: process.env.PORT,
+        socket: {
+            domain: require('./browserSyncDomain')
+        }
+    });
+});
+
+gulp.task('webserver', ['watch'], function(){
+    return gulp.src('example')
+    .pipe($.webserver({
+        host: 'localhost',
+        path: '/example',
+        port: '8000'
+    }))
+    .on('error', $.gutil.log);
+});
+
+gulp.task('watch', ['browserSync:init'], function() {
+    gulp.watch(['src/recaptcha.coffee'], ['build']).on('change', browserSync.reload);
+    gulp.watch(['example/**/*.html']).on('change', browserSync.reload);
 })
 
 gulp.task('build', ['build:header', 'build:uglify']);
