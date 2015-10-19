@@ -1,6 +1,6 @@
 /**
  * @name angular-g-recaptcha
- * @version v1.0.0
+ * @version v1.1.0
  * @author Taewoo Kim xodn4195@gmail.com
  * @license MIT
  */
