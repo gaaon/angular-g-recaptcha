@@ -78,13 +78,13 @@
                         
                     _params.callback = (response)->
                         $rootScope.$apply ->
-                            (onSuccess or angular.noop)(response)
+                            (onSuccess or _parameters.callback or angular.noop)(response)
                             return
                         return
                         
                     _params['expired-callback'] = ->
                         $rootScope.$apply ->
-                            (onExpire || angular.noop)()
+                            (onExpire or _parameters['expired-callback'] or  angular.noop)()
                             return
                         return
                     
@@ -123,18 +123,18 @@
                 return
         return
     
-    grecaptchaDirective = (grecaptcha, $parse)->
+    grecaptchaDirective = ($grecaptcha, $parse)->
         'ngInject'
         {
             restrict: 'A'
             require: '^ngModel'
             link: (scope, el, attr, ngModelCtrl)->
                 param = $parse(attr.grecaptcha)(scope)
-                el.html grecaptcha.getLoadingMessage()
+                el.html $grecaptcha.getLoadingMessage()
                 
-                scope.promise = grecaptcha.init().then ->
+                scope.promise = $grecaptcha.init().then ->
                     el.empty()
-                    grecaptcha.render el[0], param
+                    $grecaptcha.render el[0], param
                     , (res)->
                         ngModelCtrl.$setViewValue res
                         return
@@ -146,6 +146,6 @@
         }
         
     app = angular.module('grecaptcha', [])
-    .provider 'grecaptcha', grecaptchaProvider
+    .provider '$grecaptcha', grecaptchaProvider
     .directive 'grecaptcha', grecaptchaDirective
 )(window, window.angular)

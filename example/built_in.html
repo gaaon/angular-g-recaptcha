@@ -23,8 +23,8 @@
         
         <script>
             var app = angular.module('greApp', ['grecaptcha'])
-            .config(function(grecaptchaProvider){
-                grecaptchaProvider.setParameters({
+            .config(function($grecaptchaProvider){
+                $grecaptchaProvider.setParameters({
                     sitekey: window.sitekey
                 })    
             });

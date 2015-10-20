@@ -69,12 +69,12 @@
           }
           _params.callback = function(response) {
             $rootScope.$apply(function() {
-              (onSuccess || angular.noop)(response);
+              (onSuccess || _parameters.callback || angular.noop)(response);
             });
           };
           _params['expired-callback'] = function() {
             $rootScope.$apply(function() {
-              (onExpire || angular.noop)();
+              (onExpire || _parameters['expired-callback'] || angular.noop)();
             });
           };
           return _promise.then(function() {
@@ -114,7 +114,7 @@
       };
     }];
   };
-  grecaptchaDirective = ["grecaptcha", "$parse", function(grecaptcha, $parse) {
+  grecaptchaDirective = ["$grecaptcha", "$parse", function($grecaptcha, $parse) {
     'ngInject';
     return {
       restrict: 'A',
@@ -122,10 +122,10 @@
       link: function(scope, el, attr, ngModelCtrl) {
         var param;
         param = $parse(attr.grecaptcha)(scope);
-        el.html(grecaptcha.getLoadingMessage());
-        scope.promise = grecaptcha.init().then(function() {
+        el.html($grecaptcha.getLoadingMessage());
+        scope.promise = $grecaptcha.init().then(function() {
           el.empty();
-          return grecaptcha.render(el[0], param, function(res) {
+          return $grecaptcha.render(el[0], param, function(res) {
             ngModelCtrl.$setViewValue(res);
           }, function() {
             console.log('recaptcha expired!');
@@ -134,5 +134,5 @@
       }
     };
   }];
-  return app = angular.module('grecaptcha', []).provider('grecaptcha', grecaptchaProvider).directive('grecaptcha', grecaptchaDirective);
+  return app = angular.module('grecaptcha', []).provider('$grecaptcha', grecaptchaProvider).directive('grecaptcha', grecaptchaDirective);
 })(window, window.angular);

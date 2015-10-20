@@ -25,20 +25,20 @@
         
         <script>
             var app = angular.module('greApp', ['grecaptcha'])
-            .config(function(grecaptchaProvider){
-                grecaptchaProvider.setParameters({
+            .config(function($grecaptchaProvider){
+                $grecaptchaProvider.setParameters({
                     sitekey: window.sitekey
                 })    
             })
-            .directive('myGrecaptcha', function(grecaptcha, $rootScope){
+            .directive('myGrecaptcha', function($grecaptcha, $rootScope){
                 return {
                     restrict: 'A',
                     link: function(scope, el, attr){
                         el.html('loading..');
                         
-                        grecaptcha.init().then(function(){
+                        $grecaptcha.init().then(function(){
                             el.empty();
-                            grecaptcha.render(el[0], {}, function(res){
+                            $grecaptcha.render(el[0], {}, function(res){
                                 $rootScope.$broadcast('grecaptcha:success', res);
                             });
                         });

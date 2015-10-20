@@ -14,9 +14,9 @@ var appName = function(){
 describe('Grecaptcha service', function() {
     
     describe('#without init function performed,', function() {
-        var el, grecaptcha, $rootScope, $document, app = angular.module(appName(), ['grecaptcha'])
-        .config(function(grecaptchaProvider){
-            grecaptchaProvider.setParameters({
+        var el, $grecaptcha, $rootScope, $document, app = angular.module(appName(), ['grecaptcha'])
+        .config(function($grecaptchaProvider){
+            $grecaptchaProvider.setParameters({
                 sitekey: sitekey
             })    
         });
@@ -24,8 +24,8 @@ describe('Grecaptcha service', function() {
         beforeEach(function(done){
             module(app.name);
             
-            inject(function(_grecaptcha_, _$rootScope_, _$document_){
-                grecaptcha = _grecaptcha_;
+            inject(function(_$grecaptcha_, _$rootScope_, _$document_){
+                $grecaptcha = _$grecaptcha_;
                 $rootScope = _$rootScope_;
                 $document = _$document_;
             });
@@ -41,20 +41,20 @@ describe('Grecaptcha service', function() {
         });
         
         it('should have the _grecaptcha object.', function(){
-            expect(grecaptcha.getGrecaptcha()).to.be.undefined;
+            expect($grecaptcha.getGrecaptcha()).to.be.undefined;
         });
         
         it('should be fulfilled when render function is called.', function() {
-            return grecaptcha.render(el, {}).should.be.fulfilled;
+            return $grecaptcha.render(el, {}).should.be.fulfilled;
         });
     });
     
     
     describe('#after init function performed,', function() {
-        var $timeout, $q, grecaptcha, el, $rootScope, $document, 
+        var $timeout, $q, $grecaptcha, el, $rootScope, $document, 
         app = angular.module(appName(), ['grecaptcha'])
-        .config(function(grecaptchaProvider){
-            grecaptchaProvider.setParameters({
+        .config(function($grecaptchaProvider){
+            $grecaptchaProvider.setParameters({
                 sitekey: sitekey
             })    
         });
@@ -62,8 +62,8 @@ describe('Grecaptcha service', function() {
         beforeEach(function(){
             module(app.name);
             
-            inject(function(_grecaptcha_, _$rootScope_, _$document_, _$q_, _$timeout_){
-                grecaptcha = _grecaptcha_;
+            inject(function(_$grecaptcha_, _$rootScope_, _$document_, _$q_, _$timeout_){
+                $grecaptcha = _$grecaptcha_;
                 $rootScope = _$rootScope_;
                 $document = _$document_;
                 $timeout = _$timeout_;
@@ -73,7 +73,7 @@ describe('Grecaptcha service', function() {
             el = $document[0].createElement('div');
             $document[0].querySelector('body').appendChild(el);
             
-            return grecaptcha.init();
+            return $grecaptcha.init();
         });
         
         afterEach(function(){
@@ -83,11 +83,11 @@ describe('Grecaptcha service', function() {
         
         
         it('should be fulfilled when render function is called.', function(){
-           return grecaptcha.render(el, {}).should.be.fulfilled;
+           return $grecaptcha.render(el, {}).should.be.fulfilled;
         })
         
         it('should have the _grecaptcha object.', function(){
-            var _grecaptcha = grecaptcha.getGrecaptcha();
+            var _grecaptcha = $grecaptcha.getGrecaptcha();
             _grecaptcha.should.not.be.undefined;
             _grecaptcha.should.include.keys('render', 'reset', 'getResponse');
         
@@ -96,7 +96,7 @@ describe('Grecaptcha service', function() {
         describe('#with stub funciton', function(){
             var stub;
             beforeEach(function(){
-                stub = sinon.stub(grecaptcha, 'render', function(el, param, success, expire){
+                stub = sinon.stub($grecaptcha, 'render', function(el, param, success, expire){
                     var response = 'callback response';
                     
                     $timeout(function(){
@@ -106,12 +106,12 @@ describe('Grecaptcha service', function() {
             });
             
             afterEach(function(){
-                grecaptcha.render.restore();
+                $grecaptcha.render.restore();
                 $rootScope.$apply();
             });
             
             it('should call a callback.', function(){
-                grecaptcha.render(undefined, {}, function(respone){
+                $grecaptcha.render(undefined, {}, function(respone){
                     respone.should.equal('callback response');
                 });
                 
@@ -119,7 +119,7 @@ describe('Grecaptcha service', function() {
             });
             
             it('should not throw error about undefined when onSuccess is not provided.', function(){
-                grecaptcha.render();
+                $grecaptcha.render();
                 
                 $timeout.flush();
             })

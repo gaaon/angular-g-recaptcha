@@ -11,10 +11,10 @@ var appName = function() {
 }
 
 describe('Grecaptcha directive', function(){
-    var $rootScope, grecaptcha, $compile, $timeout, $q, promise, element,
+    var $rootScope, $grecaptcha, $compile, $timeout, $q, promise, element,
     app = angular.module(appName(), ['grecaptcha'])
-    .config(function(grecaptchaProvider){
-        grecaptchaProvider.setParameters({
+    .config(function($grecaptchaProvider){
+        $grecaptchaProvider.setParameters({
             sitekey: sitekey
         })
     });
@@ -27,15 +27,15 @@ describe('Grecaptcha directive', function(){
         beforeEach(function(){
             module(app.name);
             
-            inject(function(_grecaptcha_, _$rootScope_, _$compile_, _$timeout_, _$q_){
-                grecaptcha  = _grecaptcha_;
+            inject(function(_$grecaptcha_, _$rootScope_, _$compile_, _$timeout_, _$q_){
+                $grecaptcha  = _$grecaptcha_;
                 $rootScope  = _$rootScope_;
                 $compile    = _$compile_;
                 $timeout    = _$timeout_;
                 $q          = _$q_;
             });
             
-            var stub = sinon.stub(grecaptcha, 'render', function(el, param, success){
+            var stub = sinon.stub($grecaptcha, 'render', function(el, param, success){
                 var response = 'response';
                 
                 $timeout(function(){
@@ -51,7 +51,7 @@ describe('Grecaptcha directive', function(){
         });
         
         afterEach(function(){
-            grecaptcha.render.restore();
+            $grecaptcha.render.restore();
         })
         
         it('should have empty child.', function(){
@@ -72,8 +72,8 @@ describe('Grecaptcha directive', function(){
         beforeEach(function(){
             module(app.name);
             
-            inject(function(_grecaptcha_, _$rootScope_, _$compile_){
-                grecaptcha  = _grecaptcha_;
+            inject(function(_$grecaptcha_, _$rootScope_, _$compile_){
+                $grecaptcha  = _$grecaptcha_;
                 $rootScope  = _$rootScope_;
                 $compile    = _$compile_;
             });
