@@ -10,5 +10,4 @@ npm
     
 bower
 
-    bower install angular-g-recapthca
-    
+    bower install angular-g-recaptcha --save
