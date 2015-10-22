@@ -123,7 +123,7 @@
                 return
         return
     
-    grecaptchaDirective = ($grecaptcha, $parse)->
+    grecaptchaDirective = ($grecaptcha, $parse, $document)->
         'ngInject'
         {
             restrict: 'A'
@@ -141,7 +141,10 @@
                     , ->
                         console.log('recaptcha expired!');
                         return
-                    
+                
+                scope.$on '$destroy', ->
+                    angular.element($document[0].querySelector '.pls-container' ).remove()
+                    return
                 return
         }
         

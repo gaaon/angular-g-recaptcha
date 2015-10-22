@@ -114,7 +114,7 @@
       };
     }];
   };
-  grecaptchaDirective = ["$grecaptcha", "$parse", function($grecaptcha, $parse) {
+  grecaptchaDirective = ["$grecaptcha", "$parse", "$document", function($grecaptcha, $parse, $document) {
     'ngInject';
     return {
       restrict: 'A',
@@ -130,6 +130,9 @@
           }, function() {
             console.log('recaptcha expired!');
           });
+        });
+        scope.$on('$destroy', function() {
+          angular.element($document[0].querySelector('.pls-container')).remove();
         });
       }
     };

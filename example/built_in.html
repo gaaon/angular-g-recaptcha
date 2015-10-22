@@ -12,21 +12,41 @@
     </head>
   
     <body>
-        <div class="well">
-            <h3> grecaptcha built-in directive </h3>
-            <div grecaptcha="{theme: 'dark'}" data-ng-model="res"></div>
-            response value : <div data-ng-bind="res"></div>
-        </div>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+        
+        <div data-ng-view></div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.js"></script>
         <script src="scripts/angular-g-recaptcha.js"></script>
         <script src="scripts/sitekey.js"></script>
         
+        <script type="text/ng-template" id="recaptcha.html">
+            <div class="well">
+                <h3> grecaptcha built-in directive </h3>
+                <div grecaptcha="{theme: 'dark'}" data-ng-model="res"></div>
+                response value : <div data-ng-bind="res"></div>
+            </div>
+            <a href="#!/another"> To another page after recaptcha verifying is completed </a>
+        </script>
+        
         <script>
-            var app = angular.module('greApp', ['grecaptcha'])
-            .config(function($grecaptchaProvider){
+            var app = angular.module('greApp', ['grecaptcha', 'ngRoute'])
+            .config(function($grecaptchaProvider, $routeProvider, $locationProvider){
                 $grecaptchaProvider.setParameters({
                     sitekey: window.sitekey
-                })    
+                });
+                
+                $locationProvider.html5Mode(false).hashPrefix('!');
+                
+                $routeProvider
+                .when('/', {
+                    templateUrl: 'recaptcha.html'
+                })
+                .when('/another', {
+                    template: '<h3> Does "Uncaught SecurityError: Blocked a frame with origin blah blah" cause? </h3>'
+                })
+                .otherwise({
+                    redirectTo: '/'
+                })
             });
         </script>
       
