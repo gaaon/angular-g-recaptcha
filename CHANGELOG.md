@@ -21,6 +21,32 @@
     - verfiy the response in client side (Recaptcha secret key will be exposed to the client..)
 
 
+<a name="1.1.2"></a>
+# 1.1.2 (2015-10-22)
+
+## Features
+
+- **$grecaptchaProvider:**
+    - allow set onLoadMethodName (default name is 'onRecaptchaApiLoaded')
+
+
+- **$grecaptcha:**
+    - allow get onLoadMethodName
+
+
+- **grecaptcha:**
+    - catch rejected promise and throw error wrapping the reason
+    - remove logging 'recaptcha expired!' in console after recaptcha be expired
+
+
+## Breaking Changes
+- **$grecaptcha:**
+    - reject with more clear message when sitekey is not provided
+        <code>
+            Error: [$grecaptcha:sitekey] The sitekey is necessary.
+        </code>
+
+
 <a name="1.1.1"></a>
 # 1.1.1 (2015-10-22)
 
@@ -37,7 +63,7 @@
 <a name="1.1.0"></a>
 # 1.1.0 (2015-10-20)
 
-## Feature
+## Features
 
 - **$grecaptcha:**
     - allow set and get a loading message that be shown before recaptcha box is loaded
@@ -62,7 +88,7 @@
 <a name="1.0.0"></a>
 # 1.0.0 (2015-10-18)
 
-## Feature
+## Features
 
 - **grecaptcha:**
     - handle grecaptcha object of google recaptcha
