@@ -20,6 +20,20 @@
 - **$grecaptcha:**
     - verfiy the response in client side (Recaptcha secret key will be exposed to the client..)
 
+
+<a name="1.1.1"></a>
+# 1.1.1 (2015-10-22)
+
+## Bug Fixes
+
+- **grecaptcha:**
+    - fix below error by deleting the table 'pls-container' when scope is destroyed
+        <code>
+            Uncaught SecurityError: blocked a frame with origin "https://www.google.com" 
+            from accessing a frame with origin "<your domain>"
+        </code>
+    - google recaptcha faq about this error ([link](https://developers.google.com/recaptcha/docs/faq#im-getting-an-uncaught-securityerror-blocked-a-frame-with-origin-httpswwwgooglecom-from-accessing-a-frame-with-origin-your-domain-what-should-i-do))
+    
 <a name="1.1.0"></a>
 # 1.1.0 (2015-10-20)
 
