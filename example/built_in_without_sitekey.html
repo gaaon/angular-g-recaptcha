@@ -22,7 +22,7 @@
         <script type="text/ng-template" id="recaptcha.html">
             <div class="well">
                 <h3> grecaptcha built-in directive </h3>
-                <div grecaptcha data-ng-model="res"></div>
+                <div grecaptcha='{theme: "dark"}' data-ng-model="res"></div>
                 response value : <div data-ng-bind="res"></div>
             </div>
         </script>
@@ -31,7 +31,7 @@
             var app = angular.module('greApp', ['grecaptcha', 'ngRoute'])
             .config(function($grecaptchaProvider, $routeProvider, $locationProvider){
                 $grecaptchaProvider.setParameters({
-                    sitekey: window.sitekey
+                    
                 });
                 
                 $locationProvider.html5Mode(false).hashPrefix('!');
