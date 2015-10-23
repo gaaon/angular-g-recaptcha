@@ -5,11 +5,15 @@
 
 - **grecaptcha:**
     - transclusde
+    - data-stoken
 
 
 - **$grecaptcha:**
     - hide global grecaptcha
     - allow loading message template
+    - validate the languageCode whether it is available ([link](https://developers.google.com/recaptcha/docs/language))
+    - validate the paramters whether it is available ([link](https://developers.google.com/recaptcha/docs/display#render_param))
+    - ability to reset current recaptcha
 
 
 <a name="NOTTODO"></a>
