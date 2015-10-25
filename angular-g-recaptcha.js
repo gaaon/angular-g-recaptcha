@@ -1,12 +1,85 @@
 /**
  * @name angular-g-recaptcha
- * @version v1.1.1
+ * @version v1.1.2
  * @author Taewoo Kim xodn4195@gmail.com
  * @license MIT
  */
 (function(window, angular) {
-  var $grecaptchaProvider, app, grecaptchaDirective;
-  $grecaptchaProvider = function() {
+  var $grecaptchaProvider, _availableLanguageCodes, app, grecaptchaDirective;
+  _availableLanguageCodes = {
+    "ar": "Arabic",
+    "af": "Afrikaans",
+    "am": "Amharic",
+    "hy": "Armenian",
+    "az": "Azerbaijani",
+    "eu": "Basque",
+    "bn": "Bengali",
+    "bg": "Bulgarian",
+    "ca": "Catalan",
+    "zh-HK": "Chinese (Hong Kong)",
+    "zh-CN": "Chinese (Simplified)",
+    "zh-TW": "Chinese (Traditional)",
+    "hr": "Croatian",
+    "cs": "Czech",
+    "da": "Danish",
+    "nl": "Dutch",
+    "en-GB": "English (UK)",
+    "en": "English (US)",
+    "et": "Estonian",
+    "fil": "Filipino",
+    "fi": "Finnish",
+    "fr": "French",
+    "fr-CA": "French (Canadian)",
+    "gl": "Galician",
+    "ka": "Georgian",
+    "de": "German",
+    "de-AT": "German (Austria)",
+    "de-CH": "German (Switzerland)",
+    "el": "Greek",
+    "gu": "Gujarati",
+    "iw": "Hebrew",
+    "hi": "Hindi",
+    "hu": "Hungarain",
+    "is": "Icelandic",
+    "id": "Indonesian",
+    "it": "Italian",
+    "ja": "Japanese",
+    "kn": "Kannada",
+    "ko": "Korean",
+    "lo": "Laothian",
+    "lv": "Latvian",
+    "lt": "Lithuanian",
+    "ms": "Malay",
+    "ml": "Malayalam",
+    "mr": "Marathi",
+    "mn": "Mongolian",
+    "no": "Norwegian",
+    "fa": "Persian",
+    "pl": "Polish",
+    "pt": "Portuguese",
+    "pt-BR": "Portuguese (Brazil)",
+    "pt-PT": "Portuguese (Portugal)",
+    "ro": "Romanian",
+    "ru": "Russian",
+    "sr": "Serbian",
+    "si": "Sinhalese",
+    "sk": "Slovak",
+    "sl": "Slovenian",
+    "es": "Spanish",
+    "es-419": "Spanish (Latin America)",
+    "sw": "Swahili",
+    "sv": "Swedish",
+    "ta": "Tamil",
+    "te": "Telugu",
+    "th": "Thai",
+    "tr": "Turkish",
+    "uk": "Ukrainian",
+    "ur": "Urdu",
+    "vi": "Vietnamese",
+    "zu": "Zulu"
+  };
+  $grecaptchaProvider = ["grecaptchaLanguageCodes", function(grecaptchaLanguageCodes) {
+    'ngInject';
     var _createScript, _grecaptcha, _languageCode, _loadingMessage, _onLoadMethodName, _parameters, self;
     _grecaptcha = void 0;
     _parameters = {};
@@ -19,6 +92,9 @@
       return self;
     };
     this.setLanguageCode = function(languageCode) {
+      if (grecaptchaLanguageCodes[languageCode] === void 0) {
+        throw new Error('[$grecaptcha:badlan] The languageCode is not available.');
+      }
       _languageCode = languageCode;
       return self;
     };
@@ -32,7 +108,7 @@
     };
     _createScript = function($document) {
       var opt, scriptTag, src;
-      src = ("//www.google.com/recaptcha/api.js?onload=" + _onLoadMethodName + "&render=explicit") + (_languageCode ? "&h1" + _languageCode : "");
+      src = ("//www.google.com/recaptcha/api.js?onload=" + _onLoadMethodName + "&render=explicit") + (_languageCode ? "&hl=" + _languageCode : "");
       opt = {
         type: 'text/javascript',
         aysnc: true,
@@ -101,6 +177,9 @@
         };
         _self;
         this.setLanguageCode = function(languageCode) {
+          if (grecaptchaLanguageCodes[languageCode] === void 0) {
+            throw new Error('[$grecaptcha:badlan] The languageCode is not available.');
+          }
           if (_languageCode !== languageCode) {
             _grecaptcha = void 0;
           }
@@ -116,7 +195,7 @@
         };
       };
     }];
-  };
+  }];
   grecaptchaDirective = ["$grecaptcha", "$parse", "$document", function($grecaptcha, $parse, $document) {
     'ngInject';
     return {
@@ -143,5 +222,5 @@
       }
     };
   }];
-  return app = angular.module('grecaptcha', []).provider('$grecaptcha', $grecaptchaProvider).directive('grecaptcha', grecaptchaDirective);
+  return app = angular.module('grecaptcha', []).provider('$grecaptcha', $grecaptchaProvider).directive('grecaptcha', grecaptchaDirective).constant('grecaptchaLanguageCodes', _availableLanguageCodes);
 })(window, window.angular);

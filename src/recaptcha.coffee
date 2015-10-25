@@ -1,7 +1,80 @@
 ((window, angular)->
-    
+    _availableLanguageCodes = 
+        "ar"        : "Arabic"
+        "af"        : "Afrikaans"
+        "am"        : "Amharic"
+        "hy"        : "Armenian"
+        "az"        : "Azerbaijani"
+        "eu"        : "Basque"
+        "bn"        : "Bengali"
+        "bg"        : "Bulgarian"
+        "ca"        : "Catalan"
+        "zh-HK"     : "Chinese (Hong Kong)"
+        "zh-CN"     : "Chinese (Simplified)"
+        "zh-TW"     : "Chinese (Traditional)"
+        "hr"        : "Croatian"
+        "cs"        : "Czech"
+        "da"        : "Danish"
+        "nl"        : "Dutch"
+        "en-GB"     : "English (UK)"
+        "en"        : "English (US)"
+        "et"        : "Estonian"
+        "fil"       : "Filipino"
+        "fi"        : "Finnish"
+        "fr"        : "French"
+        "fr-CA"     : "French (Canadian)"
+        "gl"        : "Galician"
+        "ka"        : "Georgian"
+        "de"        : "German"
+        "de-AT"     : "German (Austria)"
+        "de-CH"     : "German (Switzerland)"
+        "el"        : "Greek"
+        "gu"        : "Gujarati"
+        "iw"        : "Hebrew"
+        "hi"        : "Hindi"
+        "hu"        : "Hungarain"
+        "is"        : "Icelandic"
+        "id"        : "Indonesian"
+        "it"        : "Italian"
+        "ja"        : "Japanese"
+        "kn"        : "Kannada"
+        "ko"        : "Korean"
+        "lo"        : "Laothian"
+        "lv"        : "Latvian"
+        "lt"        : "Lithuanian"
+        "ms"        : "Malay"
+        "ml"        : "Malayalam"
+        "mr"        : "Marathi"
+        "mn"        : "Mongolian"
+        "no"        : "Norwegian"
+        "fa"        : "Persian"
+        "pl"        : "Polish"
+        "pt"        : "Portuguese"
+        "pt-BR"     : "Portuguese (Brazil)"
+        "pt-PT"     : "Portuguese (Portugal)"
+        "ro"        : "Romanian"
+        "ru"        : "Russian"
+        "sr"        : "Serbian"
+        "si"        : "Sinhalese"
+        "sk"        : "Slovak"
+        "sl"        : "Slovenian"
+        "es"        : "Spanish"
+        "es-419"    : "Spanish (Latin America)"
+        "sw"        : "Swahili"
+        "sv"        : "Swedish"
+        "ta"        : "Tamil"
+        "te"        : "Telugu"
+        "th"        : "Thai"
+        "tr"        : "Turkish"
+        "uk"        : "Ukrainian"
+        "ur"        : "Urdu"
+        "vi"        : "Vietnamese"
+        "zu"        : "Zulu"
+        
     # $grecaptchaProvider
-    $grecaptchaProvider = ->
+    $grecaptchaProvider = (grecaptchaLanguageCodes)->
+        'ngInject'
+        
         _grecaptcha         = undefined                 # private grecaptcha object
         
         _parameters         = {}                        # private parameters object
@@ -19,6 +92,9 @@
         
         # a method that set languageCode
         @setLanguageCode = (languageCode)->
+            if grecaptchaLanguageCodes[languageCode] is undefined
+                throw new Error '[$grecaptcha:badlan] The languageCode is not available.'
+            
             _languageCode = languageCode
             self
         
@@ -35,7 +111,7 @@
         # a method that create recaptcha script
         _createScript = ($document)->
             src = "//www.google.com/recaptcha/api.js?onload=#{_onLoadMethodName}&render=explicit" \
-                    + if _languageCode then "&h1#{_languageCode}" else ""
+                    + if _languageCode then "&hl=#{_languageCode}" else ""
             
             opt = 
                 type: 'text/javascript'
@@ -115,6 +191,9 @@
                     _self
                 
                 @setLanguageCode = (languageCode)->
+                    if grecaptchaLanguageCodes[languageCode] is undefined
+                        throw new Error '[$grecaptcha:badlan] The languageCode is not available.'
+            
                     _grecaptcha = undefined if _languageCode isnt languageCode
                     _self
                 
@@ -161,4 +240,5 @@
     app = angular.module('grecaptcha', [])
     .provider '$grecaptcha', $grecaptchaProvider
     .directive 'grecaptcha', grecaptchaDirective
+    .constant  'grecaptchaLanguageCodes', _availableLanguageCodes
 )(window, window.angular)

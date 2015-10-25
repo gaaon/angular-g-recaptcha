@@ -10,8 +10,76 @@ var appName = function(){
     return 'service'+(count++);    
 }
 
-//case for grecaptcha service
+/***
+ * Scenario
+ * 
+ *  Grecaptcha service
+ *  │
+ *  ├── #commonly,
+ *  │   │
+ *  │   ├── should throw error when set invalid languageCode
+ *  │   │
+ *  │   ├── should not throw error when set valid languageCode
+ *  │   
+ *  ├── #without init funciton performed,
+ *  │   │
+ *  │   ├── should not have the _grecaptcha object.
+ *  │   │   (_grecaptcha is created after init method called
+ *  │   │   
+ *  │   └── should be fulfilled when render function is called.
+ *  │       (init method is automatically called if _grecaptcha object is undefined)
+ *  │
+ *  └── #after init function performed,
+ *      │
+ *      ├── should have the _grecaptcha object.
+ *      │
+ *      ├── should be fulfilled when render function is called.
+ *      │
+ *      └── #with stub render function
+ *          │
+ *          └── should perform a callback.
+ **/
+ 
+ 
+ //case for grecaptcha service
 describe('Grecaptcha service', function() {
+    describe('#commonly,', function(){
+        var $grecaptcha, $rootScope, $document, 
+        app = angular.module(appName(), ['grecaptcha'])
+        .config(function($grecaptchaProvider){
+            $grecaptchaProvider.setParameters({
+                sitekey: sitekey
+            })    
+        });
+        
+        var badLanguageErrorMessge = '[$grecaptcha:badlan] The languageCode is not available.';
+        
+        beforeEach(function(){
+            module(app.name);
+            
+            inject(function(_$grecaptcha_, _$rootScope_, _$document_){
+                $grecaptcha = _$grecaptcha_;
+                $rootScope = _$rootScope_;
+                $document = _$document_;
+            });
+        });
+        
+        it('should throw error when set invalid languageCode.', function(){
+            var lans = ['aa', 'bb', 'kr', 'us', 'jp', 'es-418'];
+            
+            angular.forEach(lans, function(val){
+                expect($grecaptcha.setLanguageCode.bind($grecaptcha, val)).to.throw(Error, badLanguageErrorMessge)
+            });
+        });
+        
+        it('should not throw error when set valid languageCode.', function(){
+            var lans = ['ko', 'ja', 'en', 'zh-CN', 'es-419'];
+            
+            angular.forEach(lans, function(val){
+                expect($grecaptcha.setLanguageCode.bind($grecaptcha, val)).not.to.throw(Error, badLanguageErrorMessge)
+            });
+        })
+    });
     
     describe('#without init function performed,', function() {
         var el, $grecaptcha, $rootScope, $document, app = angular.module(appName(), ['grecaptcha'])
@@ -21,7 +89,7 @@ describe('Grecaptcha service', function() {
             })    
         });
         
-        beforeEach(function(done){
+        beforeEach(function(){
             module(app.name);
             
             inject(function(_$grecaptcha_, _$rootScope_, _$document_){
@@ -32,15 +100,13 @@ describe('Grecaptcha service', function() {
             
             el = $document[0].createElement('div');
             $document[0].querySelector('body').appendChild(el);
-            
-            done();
         });
         
         afterEach(function(){
             $rootScope.$apply();
         });
         
-        it('should have the _grecaptcha object.', function(){
+        it('should not have the _grecaptcha object.', function(){
             expect($grecaptcha.getGrecaptcha()).to.be.undefined;
         });
         
@@ -93,7 +159,7 @@ describe('Grecaptcha service', function() {
         
         });
         
-        describe('#with stub funciton', function(){
+        describe('#with stub redner funciton', function(){
             var stub;
             beforeEach(function(){
                 stub = sinon.stub($grecaptcha, 'render', function(el, param, success, expire){
@@ -110,19 +176,13 @@ describe('Grecaptcha service', function() {
                 $rootScope.$apply();
             });
             
-            it('should call a callback.', function(){
+            it('should perform a callback.', function(){
                 $grecaptcha.render(undefined, {}, function(respone){
                     respone.should.equal('callback response');
                 });
                 
                 $timeout.flush();
             });
-            
-            it('should not throw error about undefined when onSuccess is not provided.', function(){
-                $grecaptcha.render();
-                
-                $timeout.flush();
-            })
         })
     });
 });
