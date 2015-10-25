@@ -11,7 +11,6 @@
 - **$grecaptcha:**
     - hide global grecaptcha
     - allow loading message template
-    - validate the languageCode whether it is available ([link](https://developers.google.com/recaptcha/docs/language))
     - validate the paramters whether it is available ([link](https://developers.google.com/recaptcha/docs/display#render_param))
     - ability to reset current recaptcha
 
@@ -23,6 +22,25 @@
 
 - **$grecaptcha:**
     - verfiy the response in client side (Recaptcha secret key will be exposed to the client..)
+
+
+<a name="1.1.3"></a>
+# 1.1.3 (2015-10-25)
+
+## Features
+
+- **grecaptchaLanguageCodes:**
+    - provide available languageCodes list
+
+
+- **$grecaptcha:**
+    - validate the languageCode and throw error if invalid
+
+
+## Bug Fixes
+
+- **$grecaptcha:**
+    - fix a error that provided languageCode was not applied
 
 
 <a name="1.1.2"></a>
