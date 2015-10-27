@@ -71,36 +71,53 @@
         "vi"        : "Vietnamese"
         "zu"        : "Zulu"
         
+    
+    _errorList = 
+        '$grecaptcha'   :
+            'badlan'    : 'The languageCode is not available.'
+            'widgetid'  : 'The widgetid is invalid.'
     # $grecaptchaProvider
-    $grecaptchaProvider = (grecaptchaLanguageCodes)->
+    $grecaptchaProvider = (greLanguageCodes, greErrorList)->
         'ngInject'
         
-        _grecaptcha         = undefined                 # private grecaptcha object
+        ### private variables ###
+        _grecaptcha         = undefined                 # grecaptcha object
+        _parameters         = {}                        # parameters object
+        _languageCode       = undefined                 # languageCode value
+        _onLoadMethodName   = "onRecaptchaApiLoaded"    # method name called when recaptcha script be loaded
+        _scriptTag          = undefined                 # a tag that contains recaptcha script
         
-        _parameters         = {}                        # private parameters object
-        _languageCode       = undefined                 # private languageCode value
+        self = @                                        # this reference
         
-        _onLoadMethodName   = "onRecaptchaApiLoaded"    # private name for method called when recaptcha script be loaded
-        _loadingMessage     = "loading.."               # private loading message value
+        serviceName         = "$grecaptcha"
         
-        self = @                                        # private this reference
         
-        # a method that set parameters
-        @setParameters = (params)->
+        ### methods ###
+        generateErrorMessge = (serviceName, errorCode)->
+            if greErrorList[serviceName] is undefined
+                throw new Error 'No such service!'
+                
+            errorMessage = greErrorList[serviceName][errorCode]
+            
+            if errorMessage is undefined
+                throw new Error 'No such errorCode!'
+            
+            "[#{serviceName}:#{errorCode}] #{errorMessage}"
+            
+        ###
+        # Set parameters and validate them
+        # @param params the arguments that are used as config of recaptcha render
+        ###
+        @setParameters = (params)-> 
             _parameters = params
             self
         
         # a method that set languageCode
         @setLanguageCode = (languageCode)->
             if grecaptchaLanguageCodes[languageCode] is undefined
-                throw new Error '[$grecaptcha:badlan] The languageCode is not available.'
+                throw new Error generateErrorMessge serviceName, 'badlan'
             
             _languageCode = languageCode
-            self
-        
-        # a method that set loading message
-        @setLoadingMessage = (message)->
-            _loadingMessage = message
             self
         
         # a method that set onloadMethod name
@@ -110,20 +127,19 @@
             
         # a method that create recaptcha script
         _createScript = ($document)->
-            src = "//www.google.com/recaptcha/api.js?onload=#{_onLoadMethodName}&render=explicit" \
+            src = "//www.google.com/recaptcha/api.js?render=explicit&onload="+_onLoadMethodName \
                     + if _languageCode then "&hl=#{_languageCode}" else ""
-            
             opt = 
                 type: 'text/javascript'
-                aysnc: true
+                async: true
                 defer: true
                 src: src
                 
-            scriptTag = angular.extend $document[0].createElement('script'), opt
+            _scriptTag = angular.extend $document[0].createElement('script'), opt
             
-            $document[0].querySelector('body').appendChild(scriptTag)
+            $document[0].querySelector('head').appendChild(_scriptTag)
             return
-        
+            
         this.$get = ($document, $q, $window, $rootScope)->
             'ngInject'
             new ->
@@ -131,7 +147,6 @@
                 
                 @init = ->
                     return $q.resolve() if _grecaptcha
-                    
                     promise = $q (resolve, reject)->
                         $window[_onLoadMethodName] = ->
                             $rootScope.$apply ->
@@ -145,7 +160,7 @@
                     
                     promise
                     
-                @render = (element, params, onSuccess, onExpire)->
+                @render = (element, params, onSuccess, onExpire, onInit)->
                     params = angular.extend {}, params, _parameters
                     
                     promise = if not params.sitekey then \
@@ -167,42 +182,60 @@
                                 (onExpire or params['expired-callback'] or angular.noop)()
                                 return
                             return
-                            
-                        return _grecaptcha.render element, params
+                        (onInit || angular.noop)()
                         
+                        return _grecaptcha.render element, params
+                
+                @reset = (widgetId)->
+                    try 
+                        _grecaptcha.reset widgetId
+                    catch error
+                        if widgetId isnt undefined
+                            throw new Error generateErrorMessge serviceName, 'widgetid'
+                        else
+                            throw new Error generateErrorMessge serviceName, 'nowidget'
+                    return
+                
+                @getResponse = (widgetId)->
+                    response = undefined
+                    
+                    try 
+                        response = _grecaptcha.getResponse widgetId
+                    catch error
+                        if widgetId isnt undefined
+                            throw new Error generateErrorMessge serviceName, 'widgetid'
+                        else
+                            throw new Error generateErrorMessge serviceName, 'nowidget'
+                    
+                    return response
+                
+                ### getter ###
                 @getGrecaptcha = ->
                     _grecaptcha
                     
                 @getLanguageCode = ->
                     _languageCode
                     
-                @getLoadingMessage = ->
-                    _loadingMessage
-                
                 @getOnLoadMethodName = ->
                     _onLoadMethodName
                     
                 @getParameters = ->
                     _parameters
+                
+                @getScriptTag = ->
+                    _scriptTag
                     
-                    
+                ### setter ###
                 @setGrecaptcha = (gre)->
                      _grecaptcha = gre
                     _self
                 
                 @setLanguageCode = (languageCode)->
-                    if grecaptchaLanguageCodes[languageCode] is undefined
-                        throw new Error '[$grecaptcha:badlan] The languageCode is not available.'
-            
-                    _grecaptcha = undefined if _languageCode isnt languageCode
+                    self.setLanguageCode languageCode
                     _self
                 
-                @setLoadingMessage = (message)->
-                    _loadingMessage = message
-                    _self
-                    
                 @setParameters = (param)->
-                    angular.extend _parameters, param
+                    self.setParameters param
                     _self
                 
                 return
@@ -215,16 +248,17 @@
             require: '^ngModel'
             link: (scope, el, attr, ngModelCtrl)->
                 param = $parse(attr.grecaptcha)(scope)
-                el.html $grecaptcha.getLoadingMessage()
-                
+        
                 scope.promise = $grecaptcha.init().then ->
-                    el.empty()
                     $grecaptcha.render el[0], param
                     , (res)->
                         ngModelCtrl.$setViewValue res
                         return
                     , ->
                         ### TODO What is appropriate code for here? ###
+                        return
+                    , ->
+                        el.empty()
                         return
                 .catch (reason)->
                     throw new Error reason
@@ -240,5 +274,6 @@
     app = angular.module('grecaptcha', [])
     .provider '$grecaptcha', $grecaptchaProvider
     .directive 'grecaptcha', grecaptchaDirective
-    .constant  'grecaptchaLanguageCodes', _availableLanguageCodes
+    .constant  'greLanguageCodes', _availableLanguageCodes
+    .constant  'greErrorList',  _errorList
 )(window, window.angular)

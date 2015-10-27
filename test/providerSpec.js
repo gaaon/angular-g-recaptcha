@@ -10,47 +10,18 @@ var appName = function() {
     return 'provider'+(count++);
 }
 
-// case for grecaptchaProvider
-describe('GrecapthcaProvider', function(){
-    describe('#when sitekey is provided,', function(){
-        var $grecaptcha, app = angular.module(appName(), ['grecaptcha'])
-        .config(function($grecaptchaProvider){
-            $grecaptchaProvider.setParameters({
-                sitekey: sitekey
-            })
-        });
-        
-        beforeEach(function(){
-            module(app.name);
-            
-            inject(function(_$grecaptcha_){
-                $grecaptcha = _$grecaptcha_;
-            });
-        });
-        
-        it('should have the sitekey.', function(){
-            $grecaptcha.getParameters().should.have.property('sitekey', sitekey);
-        })
-    });
-    
-    
-    describe('#when sitekey is not provided,', function(){
-        var $grecaptcha, app = angular.module(appName(), ['grecaptcha'])
-        .config(function($grecaptchaProvider){
-            $grecaptchaProvider.setParameters({
-            });
-        });
-        
-        beforeEach(function(){
-            module(app.name);
-            
-            inject(function(_$grecaptcha_){
-                $grecaptcha = _$grecaptcha_;
-            });
-        });
-        
-        it('should not have a sitekey.', function(){
-            $grecaptcha.getParameters().should.not.have.property('sitekey');
-        })
-    });
-});
+/***
+ * Scenario
+ * 
+ *  Grecaptcha provider
+ *  │
+ *  ├── #when sitekey is not provided,
+ *  │   │
+ *  │   ├── should throw an error when init function be performed.
+ *  │
+ *  ├── #when sitekey is provided,
+ *  │   │
+ *  │   ├── should not throw an error when init function be performed.
+
+***/
+

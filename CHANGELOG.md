@@ -4,15 +4,13 @@
 ## What to add someday
 
 - **grecaptcha:**
-    - transclusde
     - data-stoken
 
 
 - **$grecaptcha:**
-    - hide global grecaptcha
-    - allow loading message template
+    - hide global grecaptcha object
     - validate the paramters whether it is available ([link](https://developers.google.com/recaptcha/docs/display#render_param))
-    - ability to reset current recaptcha
+    - manage all grecaptcha widgets(add, delete)
 
 
 <a name="NOTTODO"></a>
@@ -22,6 +20,31 @@
 
 - **$grecaptcha:**
     - verfiy the response in client side (Recaptcha secret key will be exposed to the client..)
+    - add onInit callback to render method
+
+
+<a name="1.2.0"></a>
+# 1.2.0 (2015-10-26)
+
+## Features
+
+- **$grecaptcha:**
+    - 'onInit' parameter is added into 'render' method
+    - onInit parameter will be performed after init method be executed
+    - add 'reset' and 'getResponse' methods
+    - reset recaptcha widget with optional widget id, defaults to first created widget if unspecified
+    - get response from recaptcha widget with optional widget id, defaults to first created widget if unspecified
+
+
+## Breaking Changes
+
+- **$grecaptcha:**
+    - remove get/set loadingMessage 
+    - don't use loadingMessage any more
+
+
+- **grecaptcha:**
+    - show inner html in grecaptcha directive until recaptcha box be loaded
 
 
 <a name="1.1.3"></a>

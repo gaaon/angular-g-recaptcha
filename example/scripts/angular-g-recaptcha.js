@@ -1,11 +1,11 @@
 /**
  * @name angular-g-recaptcha
- * @version v1.1.2
+ * @version v1.2.0
  * @author Taewoo Kim xodn4195@gmail.com
  * @license MIT
  */
 (function(window, angular) {
-  var $grecaptchaProvider, _availableLanguageCodes, app, grecaptchaDirective;
+  var $grecaptchaProvider, _availableLanguageCodes, _errorList, app, grecaptchaDirective;
   _availableLanguageCodes = {
     "ar": "Arabic",
     "af": "Afrikaans",
@@ -78,28 +78,51 @@
     "vi": "Vietnamese",
     "zu": "Zulu"
   };
-  $grecaptchaProvider = ["grecaptchaLanguageCodes", function(grecaptchaLanguageCodes) {
+  _errorList = {
+    '$grecaptcha': {
+      'badlan': 'The languageCode is not available.',
+      'widgetid': 'The widgetid is invalid.'
+    }
+  };
+  $grecaptchaProvider = ["greLanguageCodes", "greErrorList", function(greLanguageCodes, greErrorList) {
     'ngInject';
-    var _createScript, _grecaptcha, _languageCode, _loadingMessage, _onLoadMethodName, _parameters, self;
+
+    /* private variables */
+    var _createScript, _grecaptcha, _languageCode, _onLoadMethodName, _parameters, _scriptTag, generateErrorMessge, self, serviceName;
     _grecaptcha = void 0;
     _parameters = {};
     _languageCode = void 0;
     _onLoadMethodName = "onRecaptchaApiLoaded";
-    _loadingMessage = "loading..";
+    _scriptTag = void 0;
     self = this;
+    serviceName = "$grecaptcha";
+
+    /* methods */
+    generateErrorMessge = function(serviceName, errorCode) {
+      var errorMessage;
+      if (greErrorList[serviceName] === void 0) {
+        throw new Error('No such service!');
+      }
+      errorMessage = greErrorList[serviceName][errorCode];
+      if (errorMessage === void 0) {
+        throw new Error('No such errorCode!');
+      }
+      return "[" + serviceName + ":" + errorCode + "] " + errorMessage;
+    };
+
+    /*
+     * Set parameters and validate them
+     * @param params the arguments that are used as config of recaptcha render
+     */
     this.setParameters = function(params) {
       _parameters = params;
       return self;
     };
     this.setLanguageCode = function(languageCode) {
       if (grecaptchaLanguageCodes[languageCode] === void 0) {
-        throw new Error('[$grecaptcha:badlan] The languageCode is not available.');
+        throw new Error(generateErrorMessge(serviceName, 'badlan'));
       }
       _languageCode = languageCode;
-      return self;
-    };
-    this.setLoadingMessage = function(message) {
-      _loadingMessage = message;
       return self;
     };
     this.setOnLoadMethodName = function(onLoadMethodName) {
@@ -107,16 +130,16 @@
       return self;
     };
     _createScript = function($document) {
-      var opt, scriptTag, src;
-      src = ("//www.google.com/recaptcha/api.js?onload=" + _onLoadMethodName + "&render=explicit") + (_languageCode ? "&hl=" + _languageCode : "");
+      var opt, src;
+      src = "//www.google.com/recaptcha/api.js?render=explicit&onload=" + _onLoadMethodName + (_languageCode ? "&hl=" + _languageCode : "");
       opt = {
         type: 'text/javascript',
-        aysnc: true,
+        async: true,
         defer: true,
         src: src
       };
-      scriptTag = angular.extend($document[0].createElement('script'), opt);
-      $document[0].querySelector('body').appendChild(scriptTag);
+      _scriptTag = angular.extend($document[0].createElement('script'), opt);
+      $document[0].querySelector('head').appendChild(_scriptTag);
     };
     this.$get = ["$document", "$q", "$window", "$rootScope", function($document, $q, $window, $rootScope) {
       'ngInject';
@@ -139,7 +162,7 @@
           _createScript($document);
           return promise;
         };
-        this.render = function(element, params, onSuccess, onExpire) {
+        this.render = function(element, params, onSuccess, onExpire, onInit) {
           var promise;
           params = angular.extend({}, params, _parameters);
           promise = !params.sitekey ? $q.reject('[$grecaptcha:sitekey] The sitekey is necessary.') : !_grecaptcha ? _self.init() : $q.resolve();
@@ -154,17 +177,45 @@
                 (onExpire || params['expired-callback'] || angular.noop)();
               });
             };
+            (onInit || angular.noop)();
             return _grecaptcha.render(element, params);
           });
         };
+        this.reset = function(widgetId) {
+          var error, error1;
+          try {
+            _grecaptcha.reset(widgetId);
+          } catch (error1) {
+            error = error1;
+            if (widgetId !== void 0) {
+              throw new Error(generateErrorMessge(serviceName, 'widgetid'));
+            } else {
+              throw new Error(generateErrorMessge(serviceName, 'nowidget'));
+            }
+          }
+        };
+        this.getResponse = function(widgetId) {
+          var error, error1, response;
+          response = void 0;
+          try {
+            response = _grecaptcha.getResponse(widgetId);
+          } catch (error1) {
+            error = error1;
+            if (widgetId !== void 0) {
+              throw new Error(generateErrorMessge(serviceName, 'widgetid'));
+            } else {
+              throw new Error(generateErrorMessge(serviceName, 'nowidget'));
+            }
+          }
+          return response;
+        };
+
+        /* getter */
         this.getGrecaptcha = function() {
           return _grecaptcha;
         };
         this.getLanguageCode = function() {
           return _languageCode;
-        };
-        this.getLoadingMessage = function() {
-          return _loadingMessage;
         };
         this.getOnLoadMethodName = function() {
           return _onLoadMethodName;
@@ -172,25 +223,21 @@
         this.getParameters = function() {
           return _parameters;
         };
+        this.getScriptTag = function() {
+          return _scriptTag;
+        };
+
+        /* setter */
         this.setGrecaptcha = function(gre) {
           return _grecaptcha = gre;
         };
         _self;
         this.setLanguageCode = function(languageCode) {
-          if (grecaptchaLanguageCodes[languageCode] === void 0) {
-            throw new Error('[$grecaptcha:badlan] The languageCode is not available.');
-          }
-          if (_languageCode !== languageCode) {
-            _grecaptcha = void 0;
-          }
-          return _self;
-        };
-        this.setLoadingMessage = function(message) {
-          _loadingMessage = message;
+          self.setLanguageCode(languageCode);
           return _self;
         };
         this.setParameters = function(param) {
-          angular.extend(_parameters, param);
+          self.setParameters(param);
           return _self;
         };
       };
@@ -204,14 +251,14 @@
       link: function(scope, el, attr, ngModelCtrl) {
         var param;
         param = $parse(attr.grecaptcha)(scope);
-        el.html($grecaptcha.getLoadingMessage());
         scope.promise = $grecaptcha.init().then(function() {
-          el.empty();
           return $grecaptcha.render(el[0], param, function(res) {
             ngModelCtrl.$setViewValue(res);
           }, function() {
 
             /* TODO What is appropriate code for here? */
+          }, function() {
+            el.empty();
           });
         })["catch"](function(reason) {
           throw new Error(reason);
@@ -222,5 +269,5 @@
       }
     };
   }];
-  return app = angular.module('grecaptcha', []).provider('$grecaptcha', $grecaptchaProvider).directive('grecaptcha', grecaptchaDirective).constant('grecaptchaLanguageCodes', _availableLanguageCodes);
+  return app = angular.module('grecaptcha', []).provider('$grecaptcha', $grecaptchaProvider).directive('grecaptcha', grecaptchaDirective).constant('greLanguageCodes', _availableLanguageCodes).constant('greErrorList', _errorList);
 })(window, window.angular);
