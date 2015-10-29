@@ -1,4 +1,5 @@
 ((window, angular)->
+    
     _availableLanguageCodes = 
         "ar"        : "Arabic"
         "af"        : "Afrikaans"
@@ -76,6 +77,8 @@
         '$grecaptcha'   :
             'badlan'    : 'The languageCode is not available.'
             'widgetid'  : 'The widgetid is invalid.'
+            
+            
     # $grecaptchaProvider
     $grecaptchaProvider = (greLanguageCodes, greErrorList)->
         'ngInject'
