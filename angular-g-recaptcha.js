@@ -146,8 +146,29 @@ function $grecaptchaProvider(greLanguageCodes) {
     };
     
     
+    
+    /**
+     * @private
+     * @description
+     * Set value to key of target which defaults to _parameters
+     * 
+     * The purpose of this method is not just to set value 
+     * but also to validate the given key and value
+     * 
+     * @exapmple
+     * setLanguageCode('ko')                // can set languageCode of _parameters
+     * 
+     * setLanguageCode('ko', {})            // can validate whether given 'kr' is right languageCode or not
+     * 
+     * setLanguageCode('ko', myVariable)    // can also set value of not _parameters but myVariable
+     * 
+     * @param {string=} key property name
+     * @param {*=} value property value
+     * @param {Object} target the target which be set key and value
+     * @returns {Object} this reference
+     */
     function setValue(key, value, target) {
-        if( target == void 0 ) {
+        if( target === void 0 ) {
             _parameters[key] = value;
         }
         else {
@@ -156,6 +177,8 @@ function $grecaptchaProvider(greLanguageCodes) {
         
         return self;
     }
+    
+    
     
     /**
      * @ngdoc function
@@ -176,6 +199,7 @@ function $grecaptchaProvider(greLanguageCodes) {
         setValue('sitekey', sitekey, arguments[1]);
         return self;
     };
+    
     
     
     /**
@@ -206,6 +230,7 @@ function $grecaptchaProvider(greLanguageCodes) {
     };
     
     
+    
     /**
      * @ngdoc function
      * @name $grecaptchaProvider#setType
@@ -234,6 +259,7 @@ function $grecaptchaProvider(greLanguageCodes) {
     };
     
     
+    
     /**
      * @ngdoc function
      * @name $grecaptchaProvider#setSize
@@ -245,6 +271,7 @@ function $grecaptchaProvider(greLanguageCodes) {
      * @returns {Object} this reference
      */
     this.setSize = function(size) {
+        //validate phase
         var sizes = ['compact', 'normal'];
         
         if( angular.isString(size) ) {
@@ -255,9 +282,11 @@ function $grecaptchaProvider(greLanguageCodes) {
             throw new $greMinErr('badsize', 'A size has to be one of {0}.', sizes);
         }
         
+        //set phase
         setValue('size', size, arguments[1]);
         return self;
     }
+    
     
     
     /**
@@ -271,13 +300,16 @@ function $grecaptchaProvider(greLanguageCodes) {
      * @returns {Object} this reference
      */
     this.setTabindex = function(tabindex) {
+        //validate phase
         if( !angular.isNumber(tabindex) ) {
             throw new $greMinErr('badtabindex', 'A tabindex has to be a number.');
         }
         
+        //set phase
         setValue('tabindex', tabindex, arguments[1]);
         return self;
     }
+    
     
     
     /**
@@ -291,13 +323,16 @@ function $grecaptchaProvider(greLanguageCodes) {
      * @returns {Object} this reference
      */
     this.setCallback = function(callback) {
+        //validate phase
         if( !angular.isFunction(callback) ) {
             throw new $greMinErr('badcallback', 'A callback has to be a function.');
         }
         
+        //set phase
         setValue('callback', callback, arguments[1]);
         return self;
     }
+    
     
     
     /**
@@ -311,10 +346,12 @@ function $grecaptchaProvider(greLanguageCodes) {
      * @returns {Object} this reference
      */
     this.setExpiredCallback = function(expiredCallback) {
+        //validate phase
         if( !angular.isFunction(expiredCallback) ) {
             throw new $greMinErr('badexpcallback', 'A expired-callback has to a function.');
         }
         
+        //set phase
         setValue('expired-callback', expiredCallback, arguments[1]);
         return self;
     }
@@ -331,7 +368,7 @@ function $grecaptchaProvider(greLanguageCodes) {
      * @returns {Object} this reference
      */
     this.setLanguageCode = function(languageCode){
-        if( greLanguageCodes[languageCode] == void 0 ) {
+        if( greLanguageCodes[languageCode] === void 0 ) {
             throw new $greMinErr('badlan', "The languageCode is invalid.", languageCode);
         }
         
@@ -340,8 +377,16 @@ function $grecaptchaProvider(greLanguageCodes) {
     }
     
     
-    function camelCaseWithSet(str) {
-        str = 'set-'+str;
+    /**
+     * @private
+     * @description
+     * Generate camelCase with given snakeCase
+     * (eg. 'camel-case' -> 'camelCase', 'ca-mel-case' -> 'caMelCase')
+     * 
+     * @param {string=} str string to convert
+     * @returns {string} result of converting
+     */
+    function camelCase(str) {
         return str.split('-').reduce(function(pre, cur){
             pre += cur.charAt(0).toUpperCase()+cur.slice(1);
             return pre;
@@ -361,7 +406,7 @@ function $grecaptchaProvider(greLanguageCodes) {
      */
     this.setParameters = function(params){
         angular.forEach(params, function(value, key) {
-            key = camelCaseWithSet(key);
+            key = camelCase('set-'+key);
             if( !!self[key] ) {
                 self[key](value, arguments[1]);
             }
@@ -412,23 +457,36 @@ function $grecaptchaProvider(greLanguageCodes) {
         return scriptTag;
     }
     
+    
+    
     this.$get = ["$q", "$window", "$rootScope", "$document", "$timeout", function($q, $window, $rootScope, $document, $timeout){
         function $grecaptcha(){
             var _self = this;
             
             
+            /**
+             * @ngdoc function
+             * @name $grecaptcha#init
+             * @description
+             * Set _grecaptcha object from $window after recaptcha script loaded if undefined.
+             * 
+             * By returning a promise which be resolved on script loaded, 
+             * can check whether _grecaptcha initialization is over or not.
+             * 
+             * @param {function=} a callback performed after initialization is finished
+             * @returns {Object} a promise 
+             */
             this.init = function(callback){
                 if( !!_grecaptcha ) {
                     return $q.resolve();
                 }
-                
                 return $q(function(resolve, reject) {
                     // TODO add timeout function to reject if script loading time is over..
                     
                     $window[_onLoadMethodName] = function(){
                         $rootScope.$apply(function(){
                             (callback || angular.noop)();
-                            _grecaptcha = $window.grecaptcha;
+                            _self.setGrecaptcha($window.grecaptcha);
                             resolve();
                         });
                     };
@@ -447,26 +505,72 @@ function $grecaptchaProvider(greLanguageCodes) {
                     throw new $greMinErr('nositekey', 'The sitekey has to be provided.');
                 }
                 
-                var promise = !!_grecaptcha ? $q.resolve() : _self.init(onInit);
+                var promise = _self.init(onInit);
                 
                 return promise.then(function(){
-                    return _grecaptcha.render(el, _parameters);
+                    var paramCopy = angular.copy(_parameters);
+                    paramCopy['callback'] = function(response){
+                        $rootScope.$apply(function(){
+                            (paramCopy.callback || angular.noop)(response);
+                        });
+                    }
+                    
+                    
+                    paramCopy['expired-callback'] = function(){
+                        $rootScope.$apply(function(){
+                            (paramCopy['expired-callback'] || angular.noop)();
+                        })
+                    }
+                    
+                    
+                    return _grecaptcha.render(el, paramCopy);
                 });
             };
+            
+            // TODO will fill reset function someday..
+            this.reset = function(widget_id){};
+            
+            // TODO will fill getResponse function someday also..
+            this.getResponse = function(widget_id){};
             
             
             this.getGrecaptcha = function(){
                 return _grecaptcha;
             };
             
-            var properties = ['onLoadMethodName', 'sitekey', 'theme', 'type', 'size', 'tabindex', 'callback',
-                'expired-callback'];
             
+            this.setGrecaptcha = function(grecaptcha){
+                _grecaptcha = grecaptcha;
+                return _self;
+            };
+            
+            var properties = ['onLoadMethodName', 'sitekey', 'theme', 'type', 'size', 
+                'tabindex', 'callback', 'expired-callback', 'languageCode'];
+            
+            
+            // setter loop
             angular.forEach(properties, function(prop, index){
-                var methodName = camelCaseWithSet(prop);
+                var methodName = camelCase('set-'+prop);
                 _self[methodName] = function(param) {
                     self[methodName](param);
                     return _self;
+                };
+            });
+            
+            
+            // getter loop
+            angular.forEach(properties, function(prop, index){
+                var methodName = camelCase('get-'+prop);
+                _self[methodName] = function(param) {
+                    if( prop === 'onLoadMethodName' ) {
+                        return _onLoadMethodName;
+                    }
+                    else if( prop === 'languageCode' ) {
+                        return _languageCode;
+                    }
+                    else {
+                        return _parameters[prop];
+                    }
                 };
             });
         }
