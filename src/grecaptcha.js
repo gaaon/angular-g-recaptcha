@@ -76,7 +76,6 @@ function $grecaptchaProvider(greLanguageCodes) {
         // TODO How can validate sitekey?
         // it looks difficult to check in front-end..
         
-        
         //set phase
         setValue('sitekey', sitekey, arguments[1]);
         return self;
@@ -287,10 +286,12 @@ function $grecaptchaProvider(greLanguageCodes) {
      * @returns {Object} this reference
      */
     this.setParameters = function(params){
+        var arg = arguments;
+        
         angular.forEach(params, function(value, key) {
             key = camelCase('set-'+key);
             if( !!self[key] ) {
-                self[key](value, arguments[1]);
+                self[key](value, arg[1]);
             }
         });
         return self;
@@ -382,7 +383,6 @@ function $grecaptchaProvider(greLanguageCodes) {
                 if( !angular.isElement(el) ) {
                     throw new $greMinErr('badel', 'The element is invalid.');
                 }
-                
                 if( !_parameters.sitekey ) {
                     throw new $greMinErr('nositekey', 'The sitekey has to be provided.');
                 }
@@ -390,17 +390,22 @@ function $grecaptchaProvider(greLanguageCodes) {
                 var promise = _self.init(onInit);
                 
                 return promise.then(function(){
+                    
+                    // TODO I don't like this logic
+                    // want to change it more gracefully
+                    
                     var paramCopy = angular.copy(_parameters);
+                    
                     paramCopy['callback'] = function(response){
                         $rootScope.$apply(function(){
-                            (paramCopy.callback || angular.noop)(response);
+                            (_parameters.callback || angular.noop)(response);
                         });
                     }
                     
                     
                     paramCopy['expired-callback'] = function(){
                         $rootScope.$apply(function(){
-                            (paramCopy['expired-callback'] || angular.noop)();
+                            (_parameters['expired-callback'] || angular.noop)();
                         })
                     }
                     

@@ -60,15 +60,16 @@ var appName = function() {
 describe('Grecaptcha provider', function(){
     context('#commonly,', function(){
         
-        var $GrecaptchaProvider, $rootScope;
+        var $GrecaptchaProvider, $rootScope, $grecaptcha;
         
         beforeEach(function(){
             module('grecaptcha', function($grecaptchaProvider){
                 $GrecaptchaProvider = $grecaptchaProvider;    
             });
             
-            inject(function(_$rootScope_){
+            inject(function(_$rootScope_, _$grecaptcha_){
                 $rootScope = _$rootScope_;
+                $grecaptcha = _$grecaptcha_;
             });
         });
         
@@ -81,6 +82,8 @@ describe('Grecaptcha provider', function(){
         it('should be able to set sitekey without any error.', function(){
             expect($GrecaptchaProvider.setSitekey.bind($GrecaptchaProvider, sitekey))
             .not.to.throw(Error);
+            
+            $grecaptcha.getSitekey().should.equal(sitekey);
         });
         
         

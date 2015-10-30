@@ -50,7 +50,7 @@ gulp.task('build:header', ['build:concat'], function() {
         .pipe($.ngAnnotate({add:true, remove:true}))
         .pipe($.header(banner, {pkg: pkg}))
         .pipe(gulp.dest('./'))
-        //.pipe($.copy('example/scripts'));
+        .pipe($.copy('example/scripts'));
 });
 
 

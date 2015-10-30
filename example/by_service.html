@@ -1,0 +1,52 @@
+<!doctype html>
+<html data-ng-app="greApp" data-ng-csp>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="profile webapp">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
+        <title>angular-g-recaptcha</title>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    </head>
+  
+    <body>
+        
+        <div class="well">
+            <h3> grecaptcha custom directive with $grecaptcha service </h3>
+            <div my-grecaptcha data-ng-model="res"></div>
+            response value : <div data-ng-bind="res"></div>
+        </div>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.js"></script>
+        <script src="scripts/angular-g-recaptcha.js"></script>
+        <script src="scripts/sitekey.js"></script>
+        
+        <script>
+            var app = angular.module('greApp', ['grecaptcha'])
+            .config(function($grecaptchaProvider){
+                $grecaptchaProvider.setParameters({
+                    sitekey: window.sitekey
+                });
+            })
+            .directive('myGrecaptcha', function($grecaptcha){
+                var myGrecaptcha = {
+                    strict: 'A',
+                    require: '^ngModel',
+                    link: function(scope, el, attr, ngModelCtrl){
+                        
+                        $grecaptcha
+                        .setCallback(function(res){
+                            ngModelCtrl.$setViewValue(res);
+                        })
+                        .render(el[0]);
+                    }
+                }
+                
+                return myGrecaptcha;
+            });
+        </script>
+      
+  </body>
+</html>
