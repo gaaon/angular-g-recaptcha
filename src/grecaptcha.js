@@ -379,6 +379,18 @@ function $grecaptchaProvider(greLanguageCodes) {
             };
             
             
+            
+            /**
+             * @ngdoc function
+             * @name $grecaptcha#render
+             * @description
+             * Render a recaptcha box in el parameter.
+             * If el is not a element or there's no sitekey, errors will be thrown.
+             * 
+             * @param {Object|string=} el the element string or object
+             * @param {function=} onInit a callback to be executed when init method is being done
+             * @returns a promise about init
+             */
             this.render = function(el, onInit){
                 if( !angular.isElement(el) ) {
                     throw new $greMinErr('badel', 'The element is invalid.');
@@ -415,17 +427,39 @@ function $grecaptchaProvider(greLanguageCodes) {
             };
             
             // TODO will fill reset function someday..
-            this.reset = function(widget_id){};
+            this.reset = function(widget_id){
+                _grecaptcha.reset(widget_id);
+                
+                return _self;
+            };
             
             // TODO will fill getResponse function someday also..
             this.getResponse = function(widget_id){};
             
             
+            /** 
+             * @ngdoc function
+             * @name $grecaptcha#getGrecaptcha
+             * @description
+             * Getter for private _grecaptcha object.
+             * 
+             * @returns private _grecaptcha object
+             */
             this.getGrecaptcha = function(){
                 return _grecaptcha;
             };
             
             
+            /**
+             * @ngdoc function
+             * @name $grecaptcha#setGrecaptcha
+             * Setter for private _grecaptcha object.
+             * 
+             * Allow set custom grecaptcha object so that give more flexiblity
+             * 
+             * @param grecaptcha new grecaptcha object
+             * @returns this service reference
+             */
             this.setGrecaptcha = function(grecaptcha){
                 _grecaptcha = grecaptcha;
                 return _self;
@@ -434,16 +468,36 @@ function $grecaptchaProvider(greLanguageCodes) {
             var properties = ['onLoadMethodName', 'sitekey', 'theme', 'type', 'size', 
                 'tabindex', 'callback', 'expired-callback', 'languageCode'];
             
-            
             // setter loop
             angular.forEach(properties, function(prop, index){
                 var methodName = camelCase('set-'+prop);
                 _self[methodName] = function(param) {
-                    self[methodName](param);
+                    self[methodName](param, arguments[1]);
                     return _self;
                 };
             });
             
+            
+            /**
+             * @ngdoc function
+             * @name $grecaptcha#setParameters
+             * Check setter of _self and call it if exists
+             * 
+             * @param params the new parameters
+             * @returns this service reference
+             */
+            this.setParameters = function(params){
+                var arg = arguments;
+                angular.forEach(params, function(value, key){
+                    key = camelCase('set-'+key);
+                    
+                    if( !!_self[key] ) {
+                        _self[key](value, arg[1]);
+                    }
+                });
+                
+                return _self;
+            }
             
             // getter loop
             angular.forEach(properties, function(prop, index){

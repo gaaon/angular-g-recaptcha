@@ -32,7 +32,7 @@ gulp.task('build:concat', function(){
     return gulp.src(
         [
             'src/minErr.js',
-            'src/!(public)*.js',
+            'src/**/!(public)*.js',
             'src/public.js'
         ])
         .pipe($.insert.append('\n\n'))
@@ -96,7 +96,7 @@ gulp.task('webserver', ['watch'], function(){
 
 
 gulp.task('watch', ['browserSync:init'], function() {
-    gulp.watch(['src/*.js'], ['build']).on('change', browserSync.reload);
+    gulp.watch(['src/**/*.js'], ['build']).on('change', browserSync.reload);
     gulp.watch(['example/**/*.html']).on('change', browserSync.reload);
 })
 

@@ -1,0 +1,63 @@
+<!doctype html>
+<html data-ng-app="greApp" data-ng-csp>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="profile webapp">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        
+        <title>angular-g-recaptcha</title>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    </head>
+  
+    <body>
+        <div data-ng-view></div>
+        
+        <script type="text/ng-template" id="recaptcha.html">
+            <div class="well">
+                <div>
+                    <h3> grecaptcha custom directive with $grecaptcha service </h3>
+                    <div grecaptcha="{theme: 'dark'}" 
+                        data-ng-model="response"> Loading.. </div>
+                    <div>
+                        response value : <div data-ng-bind="response"></div>
+                    </div>
+                </div>
+                
+                <a href="#!/other"> To other </a>
+            </div>
+            
+        </script>
+        
+        <div data-ng-include="'/example/templates/links.html'"></div>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.js"></script>
+        <script src="scripts/angular-g-recaptcha.js"></script>
+        <script src="scripts/sitekey.js"></script>
+        
+        <script>
+            var app = angular.module('greApp', ['grecaptcha', 'ngRoute'])
+            .config(function($grecaptchaProvider, $locationProvider, $routeProvider){
+                $grecaptchaProvider.setParameters({
+                    sitekey: window.sitekey
+                });
+                
+                $locationProvider.html5Mode(false).hashPrefix('!');
+                
+                $routeProvider
+                .when('/', {
+                    templateUrl: 'recaptcha.html'
+                })
+                .when('/other', {
+                    template: '<h4> other </h4> <a href="#!/"> To recaptcha </a>'
+                })
+                .otherwise({
+                    redirectTo: '/'
+                });
+            });
+        </script>
+      
+  </body>
+</html>

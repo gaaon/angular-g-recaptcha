@@ -15,10 +15,6 @@ var appName = function(){
  * 
  *  Grecaptcha service
  *  │
- *  ├── #when sitekey is given,
- *  │   │
- *  │   └── should have the sitekey given in provider.
- *  │
  *  ├── should fulfill init promise then have a grecaptcha object.
  *  │
  *  ├── should fulfill init promise then have a grecaptcha object after change onLoadMethodName.
@@ -60,14 +56,6 @@ describe('Grecaptcha service', function(){
     afterEach(function(){
         $rootScope.$apply();
         document.querySelector('body').removeChild(el);
-    })
-    
-    context('#when sitekey is given,', function(){
-        it('should have the sitekey given in provider.', function(){
-            var _sitekey = 'my_sitekey';
-            $grecaptcha.setSitekey(_sitekey);
-            $grecaptcha.getSitekey().should.be.equal(_sitekey);
-        })
     })
     
     it('should fulfill init promise then have a grecaptcha object.', function(){
@@ -138,8 +126,7 @@ describe('Grecaptcha service', function(){
             $rootScope.$apply();
             $timeout.flush();
             
-            expect(fn).to.be.calledOnce;
-            expect(fn).to.be.calledWith(response);
+            expect(fn).to.be.calledOnce.and.to.be.calledWith(response);
             expect(_response).to.equal(response);
         });
     })

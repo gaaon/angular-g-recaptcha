@@ -15,8 +15,9 @@
         
         <div class="well">
             <h3> grecaptcha custom directive with $grecaptcha service </h3>
-            <div my-grecaptcha></div>
-            <div data-ng-controller="grecaptchaCtrl">
+            <div grecaptcha="{theme: 'dark'}" 
+                data-ng-model="response"> Loading.. </div>
+            <div>
                 response value : <div data-ng-bind="response"></div>
             </div>
         </div>
@@ -31,31 +32,10 @@
             var app = angular.module('greApp', ['grecaptcha'])
             .config(function($grecaptchaProvider){
                 $grecaptchaProvider.setParameters({
-                    sitekey: window.sitekey
+                    sitekey: window.sitekey,
+                    type: 'AUDIO',
+                    onLoadMethodName: 'myCustomLoadName'
                 });
-            })
-            .directive('myGrecaptcha', function($grecaptcha, $rootScope){
-                var myGrecaptcha = {
-                    strict: 'A',
-                    link: function(scope, el, attr){
-                        
-                        $grecaptcha
-                        .setCallback(function(res){
-                            $rootScope.$broadcast('recaptcha:response', res);
-                        })
-                        .setExpiredCallback(function(){
-                            console.log('expired!');
-                        })
-                        .render(el[0]);
-                    }
-                }
-                
-                return myGrecaptcha;
-            })
-            .controller('grecaptchaCtrl', function($scope){
-                $scope.$on('recaptcha:response', function(event, res){
-                    $scope.response = res;
-                })
             });
         </script>
       
