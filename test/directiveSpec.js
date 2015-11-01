@@ -39,11 +39,11 @@ describe('Grecaptcha directive', function(){
         var response = 'my_response', stub;
         
         beforeEach(function(){
-            stub = sinon.stub($grecaptcha, 'render', function(el, onInit){
+            stub = sinon.stub($grecaptcha, 'render', function(el, param, onInit){
                 
                 return $grecaptcha.init().then(function(){
                     $timeout(function(){
-                        $grecaptcha.getCallback()(response);
+                        (param.callback || angular.noop)(response);
                     });
                     
                     return 0;

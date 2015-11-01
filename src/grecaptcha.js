@@ -28,7 +28,7 @@ function $grecaptchaProvider(greLanguageCodes) {
     };
     
     
-    
+    var init_promise = undefined;
     /**
      * @private
      * @description
@@ -360,10 +360,11 @@ function $grecaptchaProvider(greLanguageCodes) {
              * @returns {Object} a promise 
              */
             this.init = function(callback){
-                if( !!_grecaptcha ) {
-                    return $q.resolve();
+                if( !!init_promise ) {
+                    return init_promise;
                 }
-                return $q(function(resolve, reject) {
+                
+                return init_promise = $q(function(resolve, reject) {
                     // TODO add timeout function to reject if script loading time is over..
                     
                     $window[_onLoadMethodName] = function(){
@@ -391,7 +392,7 @@ function $grecaptchaProvider(greLanguageCodes) {
              * @param {function=} onInit a callback to be executed when init method is being done
              * @returns a promise about init
              */
-            this.render = function(el, onInit){
+            this.render = function(el, param, onInit){
                 if( !angular.isElement(el) ) {
                     throw new $greMinErr('badel', 'The element is invalid.');
                 }
@@ -399,42 +400,45 @@ function $grecaptchaProvider(greLanguageCodes) {
                     throw new $greMinErr('nositekey', 'The sitekey has to be provided.');
                 }
                 
-                var promise = _self.init(onInit);
+                param = param || {};
                 
-                return promise.then(function(){
+                return _self.init(onInit).then(function(){
                     
                     // TODO I don't like this logic
-                    // want to change it more gracefully
-                    
+                    // want to change it more gracefully and cleanly
                     var paramCopy = angular.copy(_parameters);
+                    
+                    _self.setParameters(param, paramCopy);
                     
                     paramCopy['callback'] = function(response){
                         $rootScope.$apply(function(){
-                            (_parameters.callback || angular.noop)(response);
+                            (param.callback || angular.noop)(response);
                         });
                     }
                     
-                    
                     paramCopy['expired-callback'] = function(){
                         $rootScope.$apply(function(){
-                            (_parameters['expired-callback'] || angular.noop)();
+                            (param['expired-callback'] || angular.noop)();
                         })
                     }
-                    
                     
                     return _grecaptcha.render(el, paramCopy);
                 });
             };
             
-            // TODO will fill reset function someday..
+            // TODO will add more codes into reset function someday..
             this.reset = function(widget_id){
                 _grecaptcha.reset(widget_id);
                 
                 return _self;
             };
             
-            // TODO will fill getResponse function someday also..
-            this.getResponse = function(widget_id){};
+            // TODO will add more codes into function someday also..
+            this.getResponse = function(widget_id){
+                _grecaptcha.getResponse(widget_id);
+                
+                return _self;
+            };
             
             
             /** 
