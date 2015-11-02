@@ -30,3 +30,6 @@ bower_components
 
 sitekey.js
 browserSyncDomain.js
+
+out
+jsdoc*

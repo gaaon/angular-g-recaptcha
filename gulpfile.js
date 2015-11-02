@@ -82,7 +82,7 @@ gulp.task('browserSync:init', function(){
 
 
 
-gulp.task('webserver', ['watch'], function(){
+gulp.task('webserver', ['browserSync:init'], function(){
     return gulp.src('example')
     .pipe($.webserver({
         host: 'localhost',
@@ -92,6 +92,44 @@ gulp.task('webserver', ['watch'], function(){
     .on('error', $.gutil.log);
 });
 
+
+
+gulp.task('webserver:jsdoc', ['browserSync:init'], function(){
+    return gulp.src('out')
+    .pipe($.webserver({
+        host: 'localhost',
+        path: '/document',
+        port: '8000'
+    }))
+    .on('error', $.gutil.log);
+})
+
+
+gulp.task('watch:jsdoc', ['browserSync:init'], function(){
+    // gulp.watch(['angular-g-recaptcha.js'], ['doc:jsdoc']).on('chage', browserSync.reload);
+    gulp.watch(['src/*.js'], ['build', 'doc:jsdoc']);
+    gulp.watch(['out/index.html']).on('change', browserSync.reload);
+    gulp.watch(['out/scripts/my.js']).on('change', browserSync.reload);
+})
+
+
+
+gulp.task('doc:jsdoc', ['build'], function(){
+    return gulp.src('jsdoc.conf.json')
+    .pipe($.shell([
+            'jsdoc -R /home/ubuntu/workspace/README.md -c <%=file.path%>'
+        ]
+    ));
+        
+});
+
+
+
+// gulp.task('jsdoc:less', function(){
+//     return gulp.src('jsdoc/static/my.less')
+//     .pipe($.less())
+//     .pipe(gulp.dest('jsdoc/static'));
+// });
 
 
 
@@ -104,3 +142,5 @@ gulp.task('watch', ['browserSync:init'], function() {
 gulp.task('build', ['build:header', 'build:uglify']);
 
 gulp.task('default', ['build', 'watch']);
+
+gulp.task('jsdoc', ['doc:jsdoc', 'watch:jsdoc', 'webserver:jsdoc']);

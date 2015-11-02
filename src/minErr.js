@@ -24,6 +24,18 @@ function isWindow(obj) {
   return obj && obj.window === obj;
 }
 
+/**
+ * @private
+ * @description
+ * Replace 'key' and 'value' to json string
+ * 
+ * 
+ * @param {*} key the key of object to replace
+ * @param {*} value the value of object to replace
+ * @returns {string} The result to replace
+ * 
+ * @from angular source code
+ */
 function toJsonReplacer(key, value) {
   var val = value;
 
@@ -40,7 +52,14 @@ function toJsonReplacer(key, value) {
   return val;
 }
 
-
+/**
+ * @private
+ * @description
+ * Serialize 'obj' into string
+ * 
+ * @param {*} obj Object to serialzize
+ * @returns {string} Serialized result
+ */
 function serializeObject(obj) {
   var seen = [];
 
@@ -56,6 +75,14 @@ function serializeObject(obj) {
   });
 }
 
+/**
+ * @private
+ * @description
+ * Convert 'obj' into string
+ * 
+ * @param {*} obj Object to convert
+ * @returns {string} Converted result
+ */
 function toDebugString(obj) {
   if (typeof obj === 'function') {
     return obj.toString().replace(/ \{[\s\S]*$/, '');
@@ -69,6 +96,7 @@ function toDebugString(obj) {
 
 
 /***
+ * @private
  * @from angularjs source code for error handler
  **/
 function minErr(module, ErrorConstructor) { // from angularjs source code

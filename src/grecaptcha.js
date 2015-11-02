@@ -1,23 +1,27 @@
 var $greMinErr = minErr('$grecaptcha');
 
 /**
+ * @namespace
  * @ngdoc provider
  * @name $grecaptchaProvider
  * @description 
- * $grecaptcha provider for pre set sitekey, theme, language code, etc
+ * grecaptcha provider 
  * 
- * @param greLanguageCodes a constant about language code table
  **/
 function $grecaptchaProvider(greLanguageCodes) {
     
-    var _grecaptcha         // grecaptcha object
-    ,   _languageCode       // languageCode value
-    ,   _onLoadMethodName = "onRecaptchaApiLoaded"  // method name of recaptcha script callback
-    ,   _scriptTag          // a tag that contains recaptcha script
-    ,   _scriptLoadTimeout = 3000
-    ,   self = this
+    var _grecaptcha                 // grecaptcha Object
+    ,   _languageCode               // languageCode value
+    ,   _scriptTag                  // tag that contains recaptcha script
+    ,   _scriptLoadTimeout = 3000   // miliseconds of load time out
+    ,   self = this                 // this reference
+    ,   init_promise = undefined    // a promise of init method                 
+                
+    // method name of recaptcha script callback
+    ,   _onLoadMethodName = "onRecaptchaApiLoaded"
     
-    ,   _parameters = {     // parameter object
+    // parameter Object
+    ,   _parameters = {     
         sitekey             : undefined
     ,   theme               : 'light'
     ,   type                : 'image'
@@ -27,8 +31,7 @@ function $grecaptchaProvider(greLanguageCodes) {
     ,   'expired-callback'  : undefined
     };
     
-    
-    var init_promise = undefined;
+     
     /**
      * @private
      * @description
@@ -40,14 +43,14 @@ function $grecaptchaProvider(greLanguageCodes) {
      * @exapmple
      * setLanguageCode('ko')                // can set languageCode of _parameters
      * 
-     * setLanguageCode('ko', {})            // can validate whether given 'kr' is right languageCode or not
+     * setLanguageCode('ko', {})            // can validate whether given 'ko' is right languageCode or not
      * 
      * setLanguageCode('ko', myVariable)    // can also set value of not _parameters but myVariable
      * 
      * @param {string=} key property name
      * @param {*=} value property value
      * @param {Object} target the target which be set key and value
-     * @returns {Object} this reference
+     * @returns {this}
      */
     function setValue(key, value, target) {
         if( target === void 0 ) {
@@ -64,17 +67,18 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setSitekey
      * @description 
-     * Set sitekey of recaptcha box with given argument.
-     * Don't have an ability to validate to identify the sitekey.
+     * Set sitekey of recaptcha box with 'sitekey'.
+     * Can't validate to identify the sitekey.
      * 
-     * @param {string=} sitekey new sitekey
-     * @returns {Object} this reference
+     * @param {string} sitekey new sitekey
+     * @return {Object} self
      */
     this.setSitekey = function(sitekey){
         // TODO How can validate sitekey?
-        // it looks difficult to check in front-end..
         
         //set phase
         setValue('sitekey', sitekey, arguments[1]);
@@ -85,13 +89,15 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setTheme
      * @description 
      * Set theme of recaptcha box with given argument
-     * and validate whether provided theme is in ['dark', 'light'];
+     * and validate whether provided theme is in candidates.
      * 
-     * @param {string=} new theme
-     * @returns {Object} this reference
+     * @param {string} theme new theme
+     * @returns {Object} self
      */
     this.setTheme = function(theme){
         //validate phase
@@ -114,13 +120,15 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setType
      * @description
      * Set type of recaptcha box with given arugment
-     * and validate whether provided type is in ['audio', 'image'] or not.
+     * and validate whether provided type is in candidates or not.
      * 
-     * @param {string=} new type
-     * @returns {Object} this reference
+     * @param {string} type new type
+     * @returns {Object} self
      */
     this.setType = function(type) {
         //validate phase
@@ -143,13 +151,15 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setSize
      * @description
      * Set size of recaptcha box with given arugment
      * and validate whether given size is in ['compact', 'normal'] or not.
      * 
-     * @param {string=} size new size
-     * @returns {Object} this reference
+     * @param {string} size new size
+     * @returns {Object} self
      */
     this.setSize = function(size) {
         //validate phase
@@ -172,13 +182,15 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setTabindex
      * @description
      * Set tabindex of recaptcha box with given argument
      * and validate whether provided tabindex is number or not.
      * 
-     * @param {number=} tabindex new tabindex
-     * @returns {Object} this reference
+     * @param {number} tabindex new tabindex
+     * @returns {Object} self
      */
     this.setTabindex = function(tabindex) {
         //validate phase
@@ -195,13 +207,15 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setCallback
      * @description
      * Set callback which will be called after recaptcha confirm
      * and validate if given callback is function.
      * 
-     * @param {function=} callback new callback
-     * @returns {Object} this reference
+     * @param {Function} callback new callback
+     * @returns {Object} self
      */
     this.setCallback = function(callback) {
         //validate phase
@@ -218,13 +232,15 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
-     * @name $grecaptchaProvider#setCallback
-     * @description
-     * Set callback which will be called when recaptcha be expired
-     * and validate if given expired callback is function.
      * 
-     * @param {function=} expiredCallback new expired-callback
-     * @returns {Object} this reference
+     * @method
+     * @name $grecaptchaProvider#setExpiredCallback
+     * @description
+     * Set expired-callback which will be called when recaptcha be expired
+     * and validate if 'expired-callback' is function.
+     * 
+     * @param {Function} expiredCallback new expired-callback
+     * @returns {Object} self
      */
     this.setExpiredCallback = function(expiredCallback) {
         //validate phase
@@ -240,13 +256,15 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setLanguageCode
      * @description
      * Set languageCode of recaptcha box with given argument
      * and validate whether provided languageCode is in greLanguageCodes or not.
      * 
-     * @param {string=} languageCode new languageCode
-     * @returns {Object} this reference
+     * @param {string} languageCode new languageCode
+     * @returns {Object} self
      */
     this.setLanguageCode = function(languageCode){
         if( greLanguageCodes[languageCode] === void 0 ) {
@@ -264,7 +282,7 @@ function $grecaptchaProvider(greLanguageCodes) {
      * Generate camelCase with given snakeCase
      * (eg. 'camel-case' -> 'camelCase', 'ca-mel-case' -> 'caMelCase')
      * 
-     * @param {string=} str string to convert
+     * @param {string} str string to convert
      * @returns {string} result of converting
      */
     function camelCase(str) {
@@ -277,13 +295,15 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setParameters
      * @description
      * Set parameters of recaptcha box with given arguments
      * by using above set/validating functions.
      * 
-     * @param {Object=} params new params
-     * @returns {Object} this reference
+     * @param {Object} params new params
+     * @returns {Object} self
      */
     this.setParameters = function(params){
         var arg = arguments;
@@ -301,12 +321,14 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     /**
      * @ngdoc function
+     * 
+     * @method
      * @name $grecaptchaProvider#setOnLoadMethodName
      * @description
      * Set onLoadMethodName which be used as callback name when script loaded
      * 
-     * @param {string=} onLoadMethodName new methodname
-     * @returns {Object} this reference
+     * @param {string} onLoadMethodName new methodname
+     * @returns {Object} self
      */
     this.setOnLoadMethodName = function(onLoadMethodName){
         _onLoadMethodName = onLoadMethodName;
@@ -320,7 +342,7 @@ function $grecaptchaProvider(greLanguageCodes) {
      * @description
      * Create script tag containing recaptcha script 
      * and register onload callback 
-     * so that init grecaptcha object
+     * so that init grecaptcha Object
      */
     function createScript($document){
         var src = "//www.google.com/recaptcha/api.js?render=explicit&onload="+_onLoadMethodName
@@ -343,21 +365,31 @@ function $grecaptchaProvider(greLanguageCodes) {
     
     
     this.$get = function($q, $window, $rootScope, $document, $timeout){
+        
+        
+        /**
+         * @namespace $grecaptcha
+         * @description
+         * grecaptcha service
+         * 
+         */
         function $grecaptcha(){
             var _self = this;
             
             
             /**
              * @ngdoc function
+             * 
+             * @method
              * @name $grecaptcha#init
              * @description
              * Set _grecaptcha object from $window after recaptcha script loaded if undefined.
-             * 
-             * By returning a promise which be resolved on script loaded, 
+             * <br><br>
+             * By returning a promise which be resolved on script loaded,<br> 
              * can check whether _grecaptcha initialization is over or not.
              * 
-             * @param {function=} a callback performed after initialization is finished
-             * @returns {Object} a promise 
+             * @param {Function=} callback a callback performed after initialization is finished
+             * @returns {Promise} Promise that will be resolved when onload callback be execute
              */
             this.init = function(callback){
                 if( !!init_promise ) {
@@ -383,14 +415,19 @@ function $grecaptchaProvider(greLanguageCodes) {
             
             /**
              * @ngdoc function
+             * 
+             * @method
              * @name $grecaptcha#render
              * @description
-             * Render a recaptcha box in el parameter.
-             * If el is not a element or there's no sitekey, errors will be thrown.
+             * Render a recaptcha box at 'element'.
              * 
-             * @param {Object|string=} el the element string or object
-             * @param {function=} onInit a callback to be executed when init method is being done
-             * @returns a promise about init
+             * @throws If 'element' is not a element or there's no sitekey
+             * 
+             * @param {(DOMElement|string)} element the element string or Object
+             * @param {Object=} param a param to be applied temporarily
+             * @param {Function=} onInit a callback to be executed when init method is being done
+             * @returns {Promise} Promise that will be resolved when _grecaptcha.render is reached.
+             * <br> The value promise reolve is the widget id of renedered recaptcha box.
              */
             this.render = function(el, param, onInit){
                 if( !angular.isElement(el) ) {
@@ -435,9 +472,8 @@ function $grecaptchaProvider(greLanguageCodes) {
             
             // TODO will add more codes into function someday also..
             this.getResponse = function(widget_id){
-                _grecaptcha.getResponse(widget_id);
                 
-                return _self;
+                return _grecaptcha.getResponse(widget_id);
             };
             
             
@@ -445,9 +481,9 @@ function $grecaptchaProvider(greLanguageCodes) {
              * @ngdoc function
              * @name $grecaptcha#getGrecaptcha
              * @description
-             * Getter for private _grecaptcha object.
+             * Getter for private _grecaptcha Object.
              * 
-             * @returns private _grecaptcha object
+             * @returns private _grecaptcha Object
              */
             this.getGrecaptcha = function(){
                 return _grecaptcha;
@@ -457,11 +493,12 @@ function $grecaptchaProvider(greLanguageCodes) {
             /**
              * @ngdoc function
              * @name $grecaptcha#setGrecaptcha
-             * Setter for private _grecaptcha object.
+             * @description
+             * Setter for private _grecaptcha Object.
              * 
-             * Allow set custom grecaptcha object so that give more flexiblity
+             * Allow set custom grecaptcha Object so that give more flexiblity
              * 
-             * @param grecaptcha new grecaptcha object
+             * @param grecaptcha new grecaptcha Object
              * @returns this service reference
              */
             this.setGrecaptcha = function(grecaptcha){
@@ -485,6 +522,7 @@ function $grecaptchaProvider(greLanguageCodes) {
             /**
              * @ngdoc function
              * @name $grecaptcha#setParameters
+             * @description
              * Check setter of _self and call it if exists
              * 
              * @param params the new parameters
