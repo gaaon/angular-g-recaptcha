@@ -2,7 +2,14 @@ function grecaptchaDirective($grecaptcha, $parse, $q, $document){
     var directiveDefinitionObject = {
         strict: 'A',
         require: '^ngModel',
+        scope: {
+            'widgetId': '=greWidgetId'
+        },
         link: function(scope, el, attr, ngModelCtrl){
+            if( angular.isObject(scope.widgetId) ) {
+                scope.widgetId.a = 'b';
+            }
+            
             var param = $parse(attr['grecaptcha'] || '{}')(scope);
             
             var cb = angular.copy($grecaptcha.getCallback() || angular.noop);
@@ -22,7 +29,7 @@ function grecaptchaDirective($grecaptcha, $parse, $q, $document){
             
             scope.promise = $grecaptcha.init().then(function(){
                 el.empty();
-                return $grecaptcha.render(el[0], param)
+                return $grecaptcha.render(el[0], param);
             });
             
             scope.$on('$destroy', function(){

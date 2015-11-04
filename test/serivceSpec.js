@@ -15,9 +15,7 @@ var appName = function(){
  * 
  *  Grecaptcha service
  *  │
- *  ├── should fulfill init promise then have a grecaptcha object.
- *  │
- *  ├── should fulfill init promise then have a grecaptcha object after change onLoadMethodName.
+ *  ├── should fulfill init promise.
  *  │
  *  ├── should throw an error when render is performed with invalid element parameter.
  *  │
@@ -58,39 +56,35 @@ describe('Grecaptcha service', function(){
         document.querySelector('body').removeChild(el);
     })
     
-    it('should fulfill init promise then have a grecaptcha object.', function(){
-        return $grecaptcha.init().should.be.fulfilled.then(function(){
-            expect($grecaptcha.getGrecaptcha()).not.to.be.undefined;
-        });
-    });
-    
-    
-    it('should fulfill init promise then have a grecaptcha object after change onLoadMethodName.', function(){
-        $grecaptcha.setOnLoadMethodName('myCustomLoadMethodName');
-        return $grecaptcha.init().should.be.fulfilled.then(function(){
-            expect($grecaptcha.getGrecaptcha()).not.to.be.undefined;
-        });
+    it('should fulfill init promise.', function(){
+        var gre = $grecaptcha();
+        
+        return gre.init().should.be.fulfilled;
     });
     
     it('should throw an error when render is performed with invalid element parameter.', function(){
-        expect($grecaptcha.render.bind($grecaptcha, undefined)).to.throw(Error, '[$grecaptcha:badel] The element is invalid.');
+        expect($grecaptcha().render.bind($grecaptcha, undefined)).to.throw(Error, '[$grecaptcha:badel] The element is invalid.');
         
     });
     
     it('should throw an error when render is performed without a sitekey.', function(){
-        expect($grecaptcha.render.bind($grecaptcha, el)).to.throw(Error, '[$grecaptcha:nositekey] The sitekey has to be provided.');
+        expect($grecaptcha().render.bind($grecaptcha, el)).to.throw(Error, '[$grecaptcha:nositekey] The sitekey has to be provided.');
         
     });
     
     it('should fulfill promise when render is performed with correct element parameter.', function(){
-        $grecaptcha.setSitekey(sitekey);
-        return $grecaptcha.render(el).should.be.fulfilled;
+        var gre = $grecaptcha();
+        
+        gre.setSitekey(sitekey);
+        return gre.render(el).should.be.fulfilled;
     });
     
     context('#with render stub,', function(){
-        var response;
+        var response, gre;
         beforeEach(function(){
-            var stub = sinon.stub($grecaptcha, 'render', function(el, onInit){
+            gre = $grecaptcha();
+            
+            var stub = sinon.stub(gre, 'render', function(el, onDestroy, onInit){
                 response = 'my_response';
                 
                 return $q(function(resolve, reject){
@@ -98,7 +92,7 @@ describe('Grecaptcha service', function(){
                     // it's like recaptcha success simulator
                     // after 1000ms, it executes callback of _parameter
                     $timeout(function(){
-                        $grecaptcha.getCallback()(response);
+                        gre.getCallback()(response);
                     }, 1000);
                     
                     resolve();
@@ -109,7 +103,7 @@ describe('Grecaptcha service', function(){
         });
         
         afterEach(function(){
-            $grecaptcha.render.restore();
+            gre.render.restore();
         });
         
         it('should execute recaptcha success callback after some seconds.', function(){
@@ -119,9 +113,8 @@ describe('Grecaptcha service', function(){
                 _response = res;
             });
             
-            $grecaptcha.setSitekey(sitekey).setCallback(fn);
-            
-            $grecaptcha.render();
+            gre.setSitekey(sitekey).setCallback(fn);
+            gre.render();
             
             $rootScope.$apply();
             $timeout.flush();

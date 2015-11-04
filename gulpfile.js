@@ -115,11 +115,9 @@ gulp.task('watch:jsdoc', ['browserSync:init'], function(){
 
 
 gulp.task('doc:jsdoc', ['build'], function(){
-    return gulp.src('jsdoc.conf.json')
-    .pipe($.shell([
-            'jsdoc -R /home/ubuntu/workspace/README.md -c <%=file.path%>'
-        ]
-    ));
+    return gulp.src('./angular-g-recaptcha.js')
+    .pipe($.ngdocs.process({}))
+    .pipe(gulp.dest('./docs'));
         
 });
 

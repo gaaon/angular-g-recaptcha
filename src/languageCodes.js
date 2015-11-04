@@ -1,9 +1,9 @@
 /***
- * @ngdoc constant
- * @name greLanguageCodes
+ * @ngdoc service
+ * @name wo.grecaptcha.$greLanguageCodes
  * @description available language codes
  **/
-var greLanguageCodes = {
+var $greLanguageCodes = {
     "ar"        : "Arabic"
 ,   "af"        : "Afrikaans"
 ,   "am"        : "Amharic"

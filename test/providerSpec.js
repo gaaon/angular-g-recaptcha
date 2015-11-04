@@ -83,7 +83,7 @@ describe('Grecaptcha provider', function(){
             expect($GrecaptchaProvider.setSitekey.bind($GrecaptchaProvider, sitekey))
             .not.to.throw(Error);
             
-            $grecaptcha.getSitekey().should.equal(sitekey);
+            $grecaptcha({}).getSitekey().should.equal(sitekey);
         });
         
         
@@ -260,7 +260,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setTheme.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badtheme] A theme has to be one of ["dark","light"].');
                     
-                    $grecaptcha.getTheme().should.equal(item.toLowerCase());
+                    $grecaptcha({}).getTheme().should.equal(item.toLowerCase());
                 });
             });
             
@@ -273,7 +273,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setType.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badtype] A type has to be one of ["audio","image"].');
                     
-                    $grecaptcha.getType().should.equal(item.toLowerCase());
+                    $grecaptcha({}).getType().should.equal(item.toLowerCase());
                 });
             });
             
@@ -286,7 +286,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setSize.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badsize] A size has to be one of ["compact","normal"].');
                     
-                    $grecaptcha.getSize().should.equal(item.toLowerCase());
+                    $grecaptcha({}).getSize().should.equal(item.toLowerCase());
                 });
                 
             });
@@ -300,7 +300,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setTabindex.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badtabindex] A tabindex has to be a number.');
                     
-                    $grecaptcha.getTabindex().should.equal(item);
+                    $grecaptcha({}).getTabindex().should.equal(item);
                 });
             });
             
@@ -321,7 +321,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setCallback.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badcallback] A callback has to be a function.');
                     
-                    $grecaptcha.getCallback().should.equal(item);
+                    $grecaptcha({}).getCallback().should.equal(item);
                 });
             });
             
@@ -343,7 +343,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setExpiredCallback.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badexpcallback] A expired-callback has to a function.');
                     
-                    $grecaptcha.getExpiredCallback().should.equal(item);
+                    $grecaptcha({}).getExpiredCallback().should.equal(item);
                 });
             });
             
