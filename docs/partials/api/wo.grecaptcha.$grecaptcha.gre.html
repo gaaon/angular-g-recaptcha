@@ -1,0 +1,158 @@
+<h1><code ng:non-bindable="">gre</code>
+<div><span class="hint">object in module <code ng:non-bindable="">wo.grecaptcha</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-page"><p>Grecaptcha instance that contains parameters and element, wigetId.
+Returned by $grecaptcha service.</p>
+</div></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_get">get(key)</h3>
+<div class="get"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-get-page"><p>Get the value of gre config&#39;s &#39;key&#39; property</p>
+</div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>key</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-get-page"><p>the key of parameters to get</p>
+</div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-get-page"><p>a value of the key</p>
+</div></td></tr></table><h4 id="methods_get_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-get-page"><pre class="prettyprint linenums">
+var gre = $grecaptcha({theme: 'dark'});
+
+gre.get('theme'); // 'dark'
+
+gre.get('type'); // 'image' ('image' is defualt type.)
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_getelement">getElement()</h3>
+<div class="getelement"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getelement-page"><p>Get the element where recaptcha box is rendered if exists.</p>
+</div><h5 id="methods_getelement_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getelement-page"><p>jQuery object wrapping element where recaptcha box is rendered</p>
+</div></td></tr></table><h4 id="methods_getelement_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getelement-page"><pre class="prettyprint linenums">
+var gre = $grecaptcha();
+
+var el = $document[0].createElement('div');
+
+
+gre.render(el).then(function(){
+     gre.getElement(); // jQuery object wrapping 'el'
+};
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_getresponse">getResponse()</h3>
+<div class="getresponse"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getresponse-page"><p>Get the gre&#39;s response from recaptcha box if exists.</p>
+</div><h5 id="methods_getresponse_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getresponse-page"><p>response</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_getwidgetid">getWidgetId()</h3>
+<div class="getwidgetid"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getwidgetid-page"><p>Get the recaptcha box&#39;s widget id if exists.</p>
+</div><h5 id="methods_getwidgetid_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getwidgetid-page"><p>widget id</p>
+</div></td></tr></table><h4 id="methods_getwidgetid_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getwidgetid-page"><pre class="prettyprint linenums">
+var gre = $grecaptcha();
+var el = $document[0].createElement('div');
+
+gre.render(el).then(function(){
+     gre.getWidgetId(); // 0
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_init">init(onInit)</h3>
+<div class="init"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-init-page"><p>Set private grecaptcha object from $window after recaptcha script loaded if undefined.
+<br><br>
+By returning a promise which be resolved on script loaded,<br> 
+can check whether grecaptcha initialization is over or not.</p>
+</div><h5 id="methods_init_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>onInit <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-function">Function</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-init-page"><p>a callback performed after initialization is finished</p>
+</div></td></tr></tbody></table><h5 id="methods_init_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-init-page"><p>Promise that will be resolved when onload callback be execute.
+<br> It will be rejected if times out.</p>
+</div></td></tr></table><h4 id="methods_init_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-init-page"><pre class="prettyprint linenums">
+var gre = $grecaptcha();
+
+gre.init(function(){
+     console.log('Initializing!!');
+}).then(function(){
+     console.log('Init is over.');
+});
+
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_remove">remove()</h3>
+<div class="remove"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-remove-page"><p>Delete the gre instance from private map object and greList.</p>
+</div><h4 id="methods_remove_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-remove-page"><pre class="prettyprint linenums">
+var gre = $grecaptcha();
+var el = $document[0].createElement('div');
+
+gre.render(el).then(function(){
+     el.remove();
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_render">render(element, onDestory, onInit)</h3>
+<div class="render"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-render-page"><p>Render a recaptcha box at &#39;element&#39;.</p>
+</div><h5 id="methods_render_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>element</td><td><a href="" class="label type-hint type-hint-domelement">DOMElement</a><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-render-page"><p>the element string or Object</p>
+</div></td></tr><tr><td>onDestory <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-function">Function</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-render-page"><p>a callback to be executed when element be destroyed</p>
+</div></td></tr><tr><td>onInit <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-function">Function</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-render-page"><p>a callback to be executed when init method is being done</p>
+</div></td></tr></tbody></table><h5 id="methods_render_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-render-page"><p>Promise that will be resolved when _grecaptcha.render is reached.
+<br> The value promise reolve is the widget id of renedered recaptcha box.</p>
+</div></td></tr></table><h4 id="methods_render_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-render-page"><pre class="prettyprint linenums">
+var gre = $grecaptcha();
+var el = $document[0].createElement('div');
+
+var promise = gre.render(el, function() { console.log('It\'s destroyed.'); });
+
+promise.then(function(){
+     console.log(res.getWidgetid()); // 0
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_reset">reset()</h3>
+<div class="reset"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-reset-page"><p>Reset the gre&#39;s recaptcha box.</p>
+</div><h5 id="methods_reset_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-reset-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_reset_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-reset-page"><pre class="prettyprint linenums">
+var el = $document[0].createElement('div');
+
+
+var promise = gre.render(el);
+
+// later
+promise.then(function(){
+     gre.reset();
+}
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_set">set(params, includeOthers)</h3>
+<div class="set"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>Set &#39;params&#39; to gre config. <br>
+If first argument is object, this method is executed.</p>
+<p>This is same with <a href="#/api/wo.grecaptcha.$grecaptchaProvider">$grecaptchaProvider</a>&#39;s set method.</p>
+</div><h5 id="methods_set_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>New parameters</p>
+</div></td></tr><tr><td>includeOthers <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>the flag whether include other properties or not</p>
+</div></td></tr></tbody></table><h5 id="methods_set_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>self</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_set">set(key, value)</h3>
+<div class="set"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>Set &#39;key&#39; of gre config with &#39;value&#39;. <br>
+If first argument is string, this method is executed.</p>
+<p>This is same with <a href="#/api/wo.grecaptcha.$grecaptchaProvider">$grecaptchaProvider</a>&#39;s set method.</p>
+</div><h5 id="methods_set_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>key</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>A key of gre config</p>
+</div></td></tr><tr><td>value</td><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>A value of the key</p>
+</div></td></tr></tbody></table><h5 id="methods_set_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>self</p>
+</div></td></tr></table></div>
+</li>
+</ul>
+</div>
+</div>

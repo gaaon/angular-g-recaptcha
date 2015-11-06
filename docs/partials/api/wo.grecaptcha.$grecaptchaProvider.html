@@ -1,0 +1,286 @@
+<h1><code ng:non-bindable="">$grecaptchaProvider</code>
+<div><span class="hint">service in module <code ng:non-bindable="">wo.grecaptcha</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="wo-grecaptcha-grecaptchaprovider-page"><p>Grecaptcha provider which allow set recaptcha configs, languageCode, onLoadMethodName</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="#/api/wo.grecaptcha.$greLanguageCodes">$greLanguageCodes</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_get">get(key)</h3>
+<div class="get"><div class="wo-grecaptcha-grecaptchaprovider-get-page"><p>Get a value of default config&#39;s &#39;key&#39; property.</p>
+</div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>key</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-get-page"><p>A key to get value</p>
+<ul>
+ <li> theme : the theme of a recaptcha box</li>
+ <li> type : the type of a recaptcha box</li>
+ <li> size : the size of a recaptcha box</li>
+ <li> sitekey: the sitekey which validates a recaptcha box </li>
+ <li> tabindex: the tabindex of a recaptcha box </li>
+ <li> callback: the callback executed when recaptcha validating be completed </li>
+ <li> &#39;expired-callback&#39;: the callback executed when a recaptcha box is expired </li>
+ <li> onLoadMethodName: the global method name for method which be performed on recaptcha script loaded </li>
+ <li> grecaptcha: can set grecaptcha directly, but don&#39;t recommend </li>
+ <li> languageCode: the languageCode of recaptcha box </li>
+</ul></div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-get-page"><p>A value of &#39;key&#39; property</p>
+</div></td></tr></table><h4 id="methods_get_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-get-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.get('theme'); // 'light'
+
+$grecaptchaProvider.get('type'); // 'image'
+
+$grecaptchaProvider.get('sitekey'); // undefined
+$grecaptchaProvider
+.set('sitekey', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI')
+.get('sitekey'); // '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_set">set(params, includeOthers)</h3>
+<div class="set"><div class="wo-grecaptcha-grecaptchaprovider-set-page"><p>Set default parameters of recaptcha box with given arguments
+by using above setting/validating functions.<br>
+If first argument is object, this method will be executed.</p>
+</div><h5 id="methods_set_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>params</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-set-page"><p>new default params</p>
+</div></td></tr><tr><td>includeOthers <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-boolean">boolean</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-set-page"><p>if the &#39;params&#39; include other property and &#39;includeOthers&#39; is true, it will not throw an error<br>
+However, it includes other property but &#39;includeOthers&#39; is false or undefined, then it will throw an error</p>
+</div></td></tr></tbody></table><h5 id="methods_set_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-set-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_set_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-set-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.set({
+     theme: 'dark',
+     type: 'audio',
+     size: 'compact',
+     languageCode: 'ko',
+     sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+     onLoadMethodName: 'myCustomLoadName',
+     callback: function(res) {
+         console.log(res);
+     },
+     'expired-callback': function() {
+         console.log('It\'s expired!');
+     }
+});
+
+// This will not throw an error though has 'otherProperty', 
+// because includeOthers is true.
+$grecaptchaProvider.set({
+     theme: 'dark',
+     type: 'audio',
+     size: 'compact',
+     languageCode: 'ko',
+     sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+     onLoadMethodName: 'myCustomLoadName',
+     callback: function(res) {
+         console.log(res);
+     },
+     'expired-callback': function() {
+         console.log('It\'s expired!');
+     },
+     'otherProperty': 'otherValue'
+}, true);
+
+
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_set">set(key, value)</h3>
+<div class="set"><div class="wo-grecaptcha-grecaptchaprovider-set-page"><p>Set a value of &#39;key&#39; property. It will throw an error if &#39;key&#39; doesn&#39;t exist in config properties.<br>
+If first argument is string, this method will be executed.</p>
+</div><h5 id="methods_set_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>key</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-set-page"><p>A key of grecaptcha default config</p>
+<p><ul>
+ <li> theme : the theme of a recaptcha box</li>
+ <li> type : the type of a recaptcha box</li>
+ <li> size : the size of a recaptcha box</li>
+ <li> sitekey: the sitekey which validates a recaptcha box </li>
+ <li> tabindex: the tabindex of a recaptcha box </li>
+ <li> callback: the callback executed when recaptcha validating be completed </li>
+ <li> &#39;expired-callback&#39;: the callback executed when a recaptcha box is expired </li>
+ <li> onLoadMethodName: the global method name for method which be performed on recaptcha script loaded </li>
+ <li> grecaptcha: can set grecaptcha directly, but don&#39;t recommend </li>
+ <li> languageCode: the languageCode of recaptcha box </li>
+</ul>
+<br>
+More detail descriptions are below.</p>
+</div></td></tr><tr><td>value</td><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-set-page"><p>a value of the key</p>
+</div></td></tr></tbody></table><h5 id="methods_set_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-set-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_set_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-set-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.set('theme', 'light');
+
+$grecaptchaProvider.set('callback', function(res) {
+     console.log(res);
+});
+
+$grecaptchaProvider.set('key', 'value'); // will throw an error
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_setcallback">setCallback(callback)</h3>
+<div class="setcallback"><div class="wo-grecaptcha-grecaptchaprovider-setcallback-page"><p>Set a default callback which will be called after recaptcha confirm. <br>
+Validate if &#39;callback&#39; is function.</p>
+<p>The callback function will accept response argument 
+which be returned by recaptcha box when validating be finished.</p>
+</div><h5 id="methods_setcallback_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>callback</td><td><a href="" class="label type-hint type-hint-function">Function</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setcallback-page"><p>New default callback</p>
+</div></td></tr></tbody></table><h5 id="methods_setcallback_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setcallback-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_setcallback_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-setcallback-page"><pre class="prettyprint linenums">
+// will log recaptcha response on console when validating be done
+$grecaptchaProvider.setCallback(function(res) {
+  console.log(res);
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_setexpiredcallback">setExpiredCallback(expiredCallback)</h3>
+<div class="setexpiredcallback"><div class="wo-grecaptcha-grecaptchaprovider-setexpiredcallback-page"><p>Set expired-callback which will be called when recaptcha be expired. <br>
+Validate if &#39;expired-callback&#39; is function.</p>
+</div><h5 id="methods_setexpiredcallback_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>expiredCallback</td><td><a href="" class="label type-hint type-hint-function">Function</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setexpiredcallback-page"><p>New default expired-callback</p>
+</div></td></tr></tbody></table><h5 id="methods_setexpiredcallback_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setexpiredcallback-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_setexpiredcallback_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-setexpiredcallback-page"><pre class="prettyprint linenums">
+//will log 'Expired!!!!' on console when expired.
+$grecaptchaProvider.setExpiredCallback(function(){
+  console.log('Expired!!!!');
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_setgrecaptcha">setGrecaptcha(grecaptcha)</h3>
+<div class="setgrecaptcha"><div class="wo-grecaptcha-grecaptchaprovider-setgrecaptcha-page"><p>Set grecaptcha object with &#39;grecaptcha&#39;</p>
+<p>It may be dangerous to insert a custom grecaptcha object.</p>
+</div><h5 id="methods_setgrecaptcha_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>grecaptcha</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setgrecaptcha-page"><p>An object to insert into private grecaptcha object</p>
+</div></td></tr></tbody></table><h5 id="methods_setgrecaptcha_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setgrecaptcha-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_setgrecaptcha_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-setgrecaptcha-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.setGrecaptcha(myGrecaptcha);
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_setlanguagecode">setLanguageCode(languageCode)</h3>
+<div class="setlanguagecode"><div class="wo-grecaptcha-grecaptchaprovider-setlanguagecode-page"><p>Set a languageCode of default config with &#39;languageCode&#39;. <br>
+Validate whether &#39;languageCode&#39; is in <a href="#/api/wo.grecaptcha.$greLanguageCodes">$greLanguageCodes</a> or not.</p>
+</div><h5 id="methods_setlanguagecode_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>languageCode</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setlanguagecode-page"><p>new languageCode</p>
+</div></td></tr></tbody></table><h5 id="methods_setlanguagecode_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setlanguagecode-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_setlanguagecode_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-setlanguagecode-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.setLanguageCode('ko');
+
+$grecaptchaProvider.setLanguageCode('en');
+
+$grecaptchaProvider.setLanguageCode('kr'); //will throw an error
+
+$grecaptchaProvider.setLanguageCode('jp'); //will throw an error
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_setonloadmethodname">setOnLoadMethodName(onLoadMethodName)</h3>
+<div class="setonloadmethodname"><div class="wo-grecaptcha-grecaptchaprovider-setonloadmethodname-page"><p>Set onLoadMethodName used as recaptcha script loaded method name</p>
+</div><h5 id="methods_setonloadmethodname_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>onLoadMethodName</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setonloadmethodname-page"><p>New methodname</p>
+</div></td></tr></tbody></table><h5 id="methods_setonloadmethodname_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setonloadmethodname-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_setonloadmethodname_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-setonloadmethodname-page"><pre class="prettyprint linenums">
+// The name of onload method becomes 'myCustomMethodName'
+$grecaptchaProvider.setOnLoadMethodName('myCustomMethodName'); 
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_setsitekey">setSitekey(sitekey)</h3>
+<div class="setsitekey"><div class="wo-grecaptcha-grecaptchaprovider-setsitekey-page"><p>Set a sitekey of default config with &#39;sitekey&#39;.<br>
+Can&#39;t validate &#39;sitekey&#39;.</p>
+</div><h5 id="methods_setsitekey_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>sitekey</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setsitekey-page"><p>New default sitekey</p>
+</div></td></tr></tbody></table><h5 id="methods_setsitekey_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setsitekey-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_setsitekey_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-setsitekey-page"><pre class="prettyprint linenums">
+// test sitekey provided in official google recaptcha site
+$grecaptchaProvider.setSitekey('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'); 
+
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_setsize">setSize(size)</h3>
+<div class="setsize"><div class="wo-grecaptcha-grecaptchaprovider-setsize-page"><p>Set a size of default config with &#39;size&#39;.<br>
+Validate whether &#39;size&#39; is in correct candidates or not.<br></p>
+</div><h5 id="methods_setsize_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>size</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setsize-page"><p>New default size, allow any uppercase character</p>
+<p>valid options: </p>
+<ul>
+ <li> &#39;normal&#39;(default) : normal size, 300px </li>
+ <li> &#39;compcat&#39; : small size  </li>
+</ul></div></td></tr></tbody></table><h5 id="methods_setsize_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-setsize-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_setsize_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-setsize-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.setSize('compact');
+
+$grecaptchaProvider.setSize('big'); //will throw an error
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_settabindex">setTabindex(tabindex)</h3>
+<div class="settabindex"><div class="wo-grecaptcha-grecaptchaprovider-settabindex-page"><p>Set a default tabindex of recaptcha box with &#39;tabindex&#39;.<br>
+Validate whether &#39;tabindex&#39; is number or not.</p>
+</div><h5 id="methods_settabindex_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>tabindex</td><td><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-settabindex-page"><p>New default tabindex</p>
+</div></td></tr></tbody></table><h5 id="methods_settabindex_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-settabindex-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_settabindex_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-settabindex-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.setTabindex(10);
+
+$grecaptchaProvider.setTabindex('100'); //will throw an error
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_settheme">setTheme(theme)</h3>
+<div class="settheme"><div class="wo-grecaptcha-grecaptchaprovider-settheme-page"><p>Set a theme of default config with &#39;theme&#39;.<br>
+Validate whether &#39;theme&#39; is in correct options.</p>
+</div><h5 id="methods_settheme_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>theme</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-settheme-page"><p>New default theme, allow any uppercase character</p>
+<p>valid options: </p>
+<ul>
+ <li>&#39;light&#39;(default) : white </li>
+ <li>&#39;dark&#39; : black </li>
+</ul></div></td></tr></tbody></table><h5 id="methods_settheme_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-settheme-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_settheme_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-settheme-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.setTheme('dark'); // dark theme
+
+$grecaptchaProvider.setTheme('light'); // light theme
+
+$grecaptchaProvider.setTheme('dARk'); // dark theme
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_settype">setType(type)</h3>
+<div class="settype"><div class="wo-grecaptcha-grecaptchaprovider-settype-page"><p>Set a type of default config with &#39;type&#39;.<br>
+Validate whether &#39;type&#39; is in correct optionss or not.</p>
+</div><h5 id="methods_settype_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>type</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-settype-page"><p>New default type, allow any uppercase characater</p>
+<p>valid options: </p>
+<ul>
+ <li> &#39;image&#39;(default) : choose images corresponding to given topic </li>
+ <li> &#39;audio&#39; : write numbers which be spoken in recaptcha box </li>
+</ul></div></td></tr></tbody></table><h5 id="methods_settype_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptchaprovider-settype-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_settype_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptchaprovider-settype-page"><pre class="prettyprint linenums">
+$grecaptchaProvider.setType('audio'); //audio type
+
+$grecaptchaProvider.setType('IMAGE'); //image type
+
+$grecaptchaProvider.setType('touch'); //will throw an error
+</pre>
+</div></div>
+</div>
+</li>
+</ul>
+</div>
+</div>

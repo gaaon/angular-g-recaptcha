@@ -1,0 +1,71 @@
+<h1><code ng:non-bindable="">$grecaptcha</code>
+<div><span class="hint">service in module <code ng:non-bindable="">wo.grecaptcha</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="wo-grecaptcha-grecaptcha-page"><p>Returns existing gre instance or creates new gre instance with &#39;param&#39; according to &#39;param&#39; type.</p>
+</div></div>
+<h2 id="usage">Usage</h2>
+<div class="usage"><pre class="prettyprint linenums">$grecaptcha([param]);</pre>
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>param <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-object">Object</a><a href="" class="label type-hint type-hint-number">number</a></td><td><div class="wo-grecaptcha-grecaptcha-page"><p>If object or undefined, creates new gre instance.</p>
+<p>If number, returns the gre instance which have &#39;param&#39; widget id if exists.</p>
+<p>Else throws an error.</p>
+</div></td></tr></tbody></table><h4 id="usage_returns">Returns</h4><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptcha-page"><p><a href="#/api/wo.grecaptcha.$grecaptcha:gre">gre</a> instance</p>
+</div></td></tr></table></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_getgrecaptcha">getGrecaptcha()</h3>
+<div class="getgrecaptcha"><div class="wo-grecaptcha-grecaptcha-getgrecaptcha-page"><p>Return the current grecaptcha object.</p>
+</div><h5 id="methods_getgrecaptcha_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptcha-getgrecaptcha-page"><p>grecaptcha object</p>
+</div></td></tr></table><h4 id="methods_getgrecaptcha_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-getgrecaptcha-page"><pre class="prettyprint linenums">
+// in config phase
+$grecaptchaProvider.setGrecaptcha(window.grecaptcha);
+
+// in run phase
+$grecaptcha.getGrecaptcha(); // window.grecaptcha
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_getlanguage">getLanguage()</h3>
+<div class="getlanguage"><div class="wo-grecaptcha-grecaptcha-getlanguage-page"><p>Return the current languageCode.</p>
+</div><h5 id="methods_getlanguage_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-getlanguage-page"><p>the languageCode</p>
+</div></td></tr></table><h4 id="methods_getlanguage_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-getlanguage-page"><pre class="prettyprint linenums">
+// in config phase
+$grecaptchaProvider.setSitekey('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
+
+
+// in run phase
+$grecaptcha.getSitekey(); // '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="methods_getonloadmethodname">getOnLoadMethodName()</h3>
+<div class="getonloadmethodname"><div class="wo-grecaptcha-grecaptcha-getonloadmethodname-page"><p>Return the current onLoadMethodName.</p>
+</div><h5 id="methods_getonloadmethodname_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-getonloadmethodname-page"><p>the onLoadMetethodName</p>
+</div></td></tr></table><h4 id="methods_getonloadmethodname_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-getonloadmethodname-page"><pre class="prettyprint linenums">
+// in config phase
+$grecaptchaProvider.setOnLoadMethodName('myCustomLoadMethod');
+
+// in run phase
+$grecaptcha.getOnLoadMethodName(); // 'myCustomLoadMethod'
+</pre>
+</div></div>
+</div>
+</li>
+</ul>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page"><pre class="prettyprint linenums">
+//returns new gre instance
+$grecaptcha({sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', theme: 'light', type: 'audio'}); 
+
+// returns gre instance with 0 widget id
+$grecaptcha(0); 
+</pre>
+</div></div>
+</div>

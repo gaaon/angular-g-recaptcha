@@ -19,6 +19,10 @@ var appName = function() {
  *  │   │
  *  │   ├── should be able to set sitekey without any error.
  *  │   │
+ *  │   ├── should be able to set onLoadMethodName without any error.
+ *  │   │
+ *  │   ├── should be able to set grecaptcha without any error.
+ *  │   │
  *  │   ├── #with incorrect arguments,
  *  │   │   │
  *  │   │   ├── should throw an error when setTheme is called.
@@ -63,7 +67,7 @@ describe('Grecaptcha provider', function(){
         var $GrecaptchaProvider, $rootScope, $grecaptcha;
         
         beforeEach(function(){
-            module('grecaptcha', function($grecaptchaProvider){
+            module('wo.grecaptcha', function($grecaptchaProvider){
                 $GrecaptchaProvider = $grecaptchaProvider;    
             });
             
@@ -80,12 +84,31 @@ describe('Grecaptcha provider', function(){
         
         
         it('should be able to set sitekey without any error.', function(){
-            expect($GrecaptchaProvider.setSitekey.bind($GrecaptchaProvider, sitekey))
+            expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'sitekey', sitekey))
             .not.to.throw(Error);
             
-            $grecaptcha({}).getSitekey().should.equal(sitekey);
+            $grecaptcha().get('sitekey').should.equal(sitekey);
         });
         
+        
+        it('should be able to set onLoadMethodName without any error.', function(){
+            var customMethodName = 'myCustomMethodName';
+            
+            expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'onLoadMethodName', customMethodName))
+            .not.to.throw(Error);
+            
+            $grecaptcha.getOnLoadMethodName().should.equal(customMethodName);
+        });
+        
+        
+        it('should be able to set grecaptcha without any error.', function(){
+            var fakeGrecaptcha = {render: function(){}, reset: function(){}, getResponse: function(){}};
+            
+            expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'grecaptcha', fakeGrecaptcha))
+            .not.to.throw(Error);
+            
+            $grecaptcha.getGrecaptcha().should.equal(fakeGrecaptcha);
+        });
         
         context('#with incorrect arguments,',function(){
             
@@ -126,7 +149,7 @@ describe('Grecaptcha provider', function(){
                 
                 angular.forEach(items, function(item){
                     expect($GrecaptchaProvider.setCallback.bind($GrecaptchaProvider, item))
-                    .to.throw(Error, '[$grecaptcha:badcallback] A callback has to be a function.');
+                    .to.throw(Error, '[$grecaptcha:badcb] A callback has to be a function.');
                 });
             });
             
@@ -137,7 +160,7 @@ describe('Grecaptcha provider', function(){
                 
                 angular.forEach(items, function(item){
                     expect($GrecaptchaProvider.setExpiredCallback.bind($GrecaptchaProvider, item))
-                    .to.throw(Error, '[$grecaptcha:badexpcallback] A expired-callback has to a function.');
+                    .to.throw(Error, '[$grecaptcha:badexpcb] A expired-callback has to a function.');
                 });
             });
             
@@ -235,15 +258,15 @@ describe('Grecaptcha provider', function(){
                 ];
                 
                 angular.forEach(items, function(item, ind){
-                    expect($GrecaptchaProvider.setParameters.bind($GrecaptchaProvider, item))
+                    expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, item))
                     .to.throw(Error);
                     
                     if(ind == 5) {
-                        expect($GrecaptchaProvider.setParameters.bind($GrecaptchaProvider, item))
-                        .to.throw(Error, '[$grecaptcha:badexpcallback] A expired-callback has to a function.');
+                        expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, item))
+                        .to.throw(Error, '[$grecaptcha:badexpcb] A expired-callback has to a function.');
                     }
                     else if(ind == 6) {
-                        expect($GrecaptchaProvider.setParameters.bind($GrecaptchaProvider, item))
+                        expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, item))
                         .to.throw(Error, '[$grecaptcha:badlan] The languageCode is invalid.');
                     }
                 });
@@ -260,7 +283,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setTheme.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badtheme] A theme has to be one of ["dark","light"].');
                     
-                    $grecaptcha({}).getTheme().should.equal(item.toLowerCase());
+                    $grecaptcha().get('theme').should.equal(item.toLowerCase());
                 });
             });
             
@@ -273,7 +296,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setType.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badtype] A type has to be one of ["audio","image"].');
                     
-                    $grecaptcha({}).getType().should.equal(item.toLowerCase());
+                    $grecaptcha().get('type').should.equal(item.toLowerCase());
                 });
             });
             
@@ -286,7 +309,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setSize.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badsize] A size has to be one of ["compact","normal"].');
                     
-                    $grecaptcha({}).getSize().should.equal(item.toLowerCase());
+                    $grecaptcha().get('size').should.equal(item.toLowerCase());
                 });
                 
             });
@@ -300,7 +323,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setTabindex.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badtabindex] A tabindex has to be a number.');
                     
-                    $grecaptcha({}).getTabindex().should.equal(item);
+                    $grecaptcha().get('tabindex').should.equal(item);
                 });
             });
             
@@ -321,7 +344,7 @@ describe('Grecaptcha provider', function(){
                     expect($GrecaptchaProvider.setCallback.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error, '[$grecaptcha:badcallback] A callback has to be a function.');
                     
-                    $grecaptcha({}).getCallback().should.equal(item);
+                    $grecaptcha().get('callback').should.equal(item);
                 });
             });
             
@@ -341,9 +364,9 @@ describe('Grecaptcha provider', function(){
                 
                 angular.forEach(items, function(item){
                     expect($GrecaptchaProvider.setExpiredCallback.bind($GrecaptchaProvider, item))
-                    .not.to.throw(Error, '[$grecaptcha:badexpcallback] A expired-callback has to a function.');
+                    .not.to.throw(Error, '[$grecaptcha:badexpcb] A expired-callback has to a function.');
                     
-                    $grecaptcha({}).getExpiredCallback().should.equal(item);
+                    $grecaptcha().get('expired-callback').should.equal(item);
                 });
             });
             
@@ -431,7 +454,7 @@ describe('Grecaptcha provider', function(){
                 ];
                 
                 angular.forEach(items, function(item, ind){
-                    expect($GrecaptchaProvider.setParameters.bind($GrecaptchaProvider, item))
+                    expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, item))
                     .not.to.throw(Error);
                     
                 });
