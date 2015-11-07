@@ -19,7 +19,7 @@ NG_DOCS={
       "type": "object",
       "moduleName": "wo.grecaptcha",
       "shortDescription": "Returns existing gre instance or creates new gre instance with &#39;param&#39; according to &#39;param&#39; type.",
-      "keywords": "$grecaptcha $grecaptchaprovider api audio config creates current error existing exists function getgrecaptcha getlanguage getonloadmethodname getsitekey gre grecaptcha instance languagecode light mycustomloadmethod number object onloadmetethodname onloadmethodname param phase return returns setgrecaptcha setonloadmethodname setsitekey theme throws type undefined widget window wo"
+      "keywords": "$document $grecaptcha $grecaptchaprovider $q $rootscope $timeout $window api audio config creates current error existing exists function getgrecaptcha getlanguage getonloadmethodname getsitekey gre grecaptcha instance languagecode light mycustomloadmethod ng number object onloadmetethodname onloadmethodname param phase return returns setgrecaptcha setonloadmethodname setsitekey theme throws type undefined widget window wo"
     },
     {
       "section": "api",
@@ -28,7 +28,16 @@ NG_DOCS={
       "type": "object",
       "moduleName": "wo.grecaptcha",
       "shortDescription": "Grecaptcha instance that contains parameters and element, wigetId.",
-      "keywords": "$document $grecaptcha $grecaptchaprovider $window _grecaptcha api argument box callback check config console createelement dark defualt delete destroyed div el element execute executed exists finished flag function getelement getresponse getwidgetid gre grecaptcha grelist image include includeothers init initialization initializing instance jquery key loaded log map method object ondestory oninit onload parameters params performed private promise properties property reached recaptcha rejected remove render rendered renedered reolve reset resolved response returned returning script service set string theme times type undefined var widget wigetid wo wrapping"
+      "keywords": "$document $grecaptcha $grecaptchaprovider $window _grecaptcha api argument box callback check config console createelement dark defualt delete destroyed div el element execute executed exists finished flag function getelement getresponse getwidgetid gre grecaptcha grelist image include includeothers init initialization initializing instance jquery key loaded log map method object ondestory oninit onload parameters params performed phase private promise properties property reached recaptcha rejected remove render rendered renedered reolve reset resolved response returned returning script service set string theme times type undefined validating var widget wigetid wo wrapping"
+    },
+    {
+      "section": "api",
+      "id": "wo.grecaptcha.$grecaptcha:grecaptcha",
+      "shortName": "grecaptcha",
+      "type": "directive",
+      "moduleName": "wo.grecaptcha",
+      "shortDescription": "Set view value of model when recaptcha validating is done.",
+      "keywords": "$document $grecaptcha $grecaptchaprovider $on $parse $scope angular api assignable box config console controller dark data-bind data-ng-controller data-ng-model directive expired expression function gre gre-info grecaptcha grectrl gredemo greinfo greinfofind html js load loading log model module ng ng-model object recaptcha rendered reset response script set sitekey test validating var view widgetid wo"
     },
     {
       "section": "api",
@@ -58,7 +67,8 @@ NG_DOCS={
     "scripts": [
       "js/angular.min.js",
       "js/angular-animate.min.js",
-      "js/marked.js"
+      "js/marked.js",
+      "js/angular-g-recaptcha.js"
     ],
     "styles": [],
     "title": "API Documentation",
@@ -79,6 +89,7 @@ NG_DOCS={
   "scripts": [
     "js/angular.min.js",
     "js/angular-animate.min.js",
-    "js/marked.js"
+    "js/marked.js",
+    "js/angular-g-recaptcha.js"
   ]
 };

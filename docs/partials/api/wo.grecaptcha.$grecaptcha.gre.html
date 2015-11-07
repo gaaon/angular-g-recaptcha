@@ -43,7 +43,15 @@ gre.render(el).then(function(){
 <li><h3 id="methods_getresponse">getResponse()</h3>
 <div class="getresponse"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getresponse-page"><p>Get the gre&#39;s response from recaptcha box if exists.</p>
 </div><h5 id="methods_getresponse_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getresponse-page"><p>response</p>
-</div></td></tr></table></div>
+</div></td></tr></table><h4 id="methods_getresponse_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getresponse-page"><pre class="prettyprint linenums">
+var gre = $grecaptcha();
+
+// after validating phase
+gre.getResponse(); // will give response of recaptcha box
+</pre>
+</div></div>
+</div>
 </li>
 <li><h3 id="methods_getwidgetid">getWidgetId()</h3>
 <div class="getwidgetid"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-getwidgetid-page"><p>Get the recaptcha box&#39;s widget id if exists.</p>

@@ -1,39 +1,99 @@
-function grecaptchaDirective($grecaptcha, $parse, $q, $document){
+/**
+ * @ngdoc directive
+ * @name wo.grecaptcha.$grecaptcha:grecaptcha
+ * 
+ * @restrict 'A'
+ * 
+ * @requires wo.grecaptcha.$grecaptcha
+ * @requires ng.$parse
+ * @requires ng.$document
+ * 
+ * @param {string=} gre-info Assignable angular expression to contain information about gre object
+ * @param {string} ng-model Assignable angular expression to data-bind to
+ * 
+ * @scope 
+ * 
+ * @description
+ * Set view value of model when recaptcha validating is done.<br>
+ * Reset view value if recaptcha be expired.
+ * 
+ * Load greInfo with information about gre object.
+ * 
+ * @example
+    <example module="greDemo">
+        <file name="index.html">
+            <div data-ng-controller="GreCtrl">
+                <div grecaptcha='{theme: "dark"}' gre-info="greInfo" data-ng-model="response">
+                    Loading..
+                </div>
+            </div>
+        </file>
+    
+        <file name="script.js">
+            angular.module('greDemo', ['wo.grecaptcha'])
+            .config(function($grecaptchaProvider) {
+                $grecaptchaProvider.set({
+                    sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI", // test sitekey
+                });
+            })
+            .controller("GreCtrl", function($scope) {
+                $scope.response;
+                $scope.greInfo = {};
+                
+                var greInfoFind = $scope.$on('greInfo', function(event, greInfo) {
+                    if( !!greInfo ) {
+                        console.log(greInfo.widgetId); //widget id of rendered recaptcha box
+                        greInfoFind();
+                    }
+                });
+                
+                $scope.$on('response', function(event, response) {
+                    console.log(response); // response of recaptcha box
+                });
+            });
+        </file>
+    </example>
+ */
+function grecaptchaDirective($grecaptcha, $parse, $document){
+    
     var directiveDefinitionObject = {
         strict: 'A',
         require: '^ngModel',
         scope: {
-            'widgetId': '=greWidgetId'
+            info: '=greInfo'
         },
         link: function(scope, el, attr, ngModelCtrl){
-            if( angular.isObject(scope.widgetId) ) {
-                scope.widgetId.a = 'b';
-            }
+            
+            if( scope.info == void 0 ) scope.info = {};   
+            //This will not cause any side effect. Just for preventing undefined error at below
             
             var param = $parse(attr['grecaptcha'] || '{}')(scope);
+            var gre = $grecaptcha(param);
             
-            var cb = angular.copy($grecaptcha.getCallback() || angular.noop);
-            var exp_cb = angular.copy($grecaptcha.getExpiredCallback() || angular.noop);
-            
-            // TODO I think that it's not right to append callback here
-            // It has to be in render method.
-            param.callback = (function(res){
-                cb(res);
+            function setViewValue(res) {
                 ngModelCtrl.$setViewValue(res);
+                
+                return res;
+            }
+            
+            gre.set({
+                callback: 
+                    [setViewValue].concat(gre.get('callback')),
+                
+                'expired-callback': 
+                    [ngModelCtrl.$setViewValue].concat(gre.get('expired-callback'))
             });
             
-            param['expired-callback'] = (function(){
-                exp_cb();
-                ngModelCtrl.$setViewValue(undefined);
-            });
-            
-            scope.promise = $grecaptcha.init().then(function(){
+            scope.info.promise = gre.init().then(function(){
                 el.empty();
-                return $grecaptcha.render(el[0], param);
-            });
-            
-            scope.$on('$destroy', function(){
-                angular.element($document[0].querySelector('.pls-container')).parent().remove();
+                
+                return gre.render(el[0], function(){
+                    angular.element($document[0].querySelector('.pls-container')).parent().remove();
+                });
+            }).then(function(){
+                scope.info.widgetId = gre.getWidgetId();
+                
+                return gre;
             });
         }
     };

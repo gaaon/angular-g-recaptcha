@@ -94,7 +94,7 @@ gulp.task('webserver', ['browserSync:init'], function(){
 
 
 
-gulp.task('webserver:ngdocs', ['browserSync:init'], function(){
+gulp.task('webserver:ngdoc', ['browserSync:init'], function(){
     return gulp.src('docs')
     .pipe($.webserver({
         host: 'localhost',
@@ -105,16 +105,21 @@ gulp.task('webserver:ngdocs', ['browserSync:init'], function(){
 });
 
 
-gulp.task('watch:ngdocs', ['browserSync:init'], function(){
-    gulp.watch(['src/*.js'], ['build', 'doc:jsdoc']);
+gulp.task('watch:ngdoc', ['browserSync:init'], function(){
+    gulp.watch(['src/**/*.js'], ['build', 'doc:ngdoc']);
     gulp.watch(['docs/index.html']).on('change', browserSync.reload);
 });
 
 
 
-gulp.task('doc:ngdocs', ['build'], function(){
+gulp.task('doc:ngdoc', ['build'], function(){
     return gulp.src('./angular-g-recaptcha.js')
-    .pipe($.ngdocs.process({html5Mode : false}))
+    .pipe($.ngdocs.process({
+        html5Mode : false,
+        scripts: [
+            './angular-g-recaptcha.js'
+        ]
+    }))
     .pipe(gulp.dest('./docs'));
         
 });
@@ -139,4 +144,4 @@ gulp.task('build', ['build:header', 'build:uglify']);
 
 gulp.task('default', ['build', 'watch']);
 
-gulp.task('ngdocs', ['doc:ngdocs', 'watch:ngdocs', 'webserver:ngdocs']);
+gulp.task('ngdoc', ['doc:ngdoc', 'watch:ngdoc', 'webserver:ngdoc']);

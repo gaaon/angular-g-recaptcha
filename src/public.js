@@ -6,6 +6,6 @@
  * A module for grecaptcha
  */
 var app = angular.module('wo.grecaptcha', [])
-.constant('$greLanguageCodes', greLanguageCodes)
+.constant('$greLanguageCodes', $greLanguageCodes)
 .provider('$grecaptcha', $grecaptchaProvider)
 .directive('grecaptcha', grecaptchaDirective);

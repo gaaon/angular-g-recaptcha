@@ -113,21 +113,21 @@ describe('Grecaptcha provider', function(){
         context('#with incorrect arguments,',function(){
             
             it('should throw an error when setTheme is called.', function(){
-                expect($GrecaptchaProvider.setTheme.bind($GrecaptchaProvider, 'incorrect_theme'))
+                expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'theme', 'incorrect_theme'))
                 .to.throw(Error, '[$grecaptcha:badtheme] A theme has to be one of ["dark","light"].');
             });
             
             
             
             it('should throw an error when setType is called.', function(){
-                expect($GrecaptchaProvider.setType.bind($GrecaptchaProvider, 'incorrect_type'))
+                expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'type', 'incorrect_type'))
                 .to.throw(Error, '[$grecaptcha:badtype] A type has to be one of ["audio","image"].');
             });
             
             
             
             it('should throw an error when setSize is called.', function(){
-                expect($GrecaptchaProvider.setSize.bind($GrecaptchaProvider, 'incorrect_size'))
+                expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'size', 'incorrect_size'))
                 .to.throw(Error, '[$grecaptcha:badsize] A size has to be one of ["compact","normal"].');
             });
             
@@ -137,7 +137,7 @@ describe('Grecaptcha provider', function(){
                 var items = ['str', function(){}, {'a' : 1 }, true];
                 
                 angular.forEach(items, function(item){
-                    expect($GrecaptchaProvider.setTabindex.bind($GrecaptchaProvider, item))
+                    expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'tabindex', item))
                     .to.throw(Error, '[$grecaptcha:badtabindex] A tabindex has to be a number.');
                 });
             });
@@ -148,8 +148,8 @@ describe('Grecaptcha provider', function(){
                 var items = ['str', 1234, {a: '1'}, true];
                 
                 angular.forEach(items, function(item){
-                    expect($GrecaptchaProvider.setCallback.bind($GrecaptchaProvider, item))
-                    .to.throw(Error, '[$grecaptcha:badcb] A callback has to be a function.');
+                    expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'callback', item))
+                    .to.throw(Error, '[$grecaptcha:badcb] A callback has to be a function or a array of functions.');
                 });
             });
             
@@ -159,8 +159,8 @@ describe('Grecaptcha provider', function(){
                 var items = ['str', 1234, {a: '1'}, true];
                 
                 angular.forEach(items, function(item){
-                    expect($GrecaptchaProvider.setExpiredCallback.bind($GrecaptchaProvider, item))
-                    .to.throw(Error, '[$grecaptcha:badexpcb] A expired-callback has to a function.');
+                    expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'expired-callback', item))
+                    .to.throw(Error, '[$grecaptcha:badexpcb] A expired-callback has to a function or a array of functions.');
                 });
             });
             
@@ -170,7 +170,7 @@ describe('Grecaptcha provider', function(){
                 var items = ['kr', 'jp', 'eng', 'es-418'];
                 
                 angular.forEach(items, function(item){
-                    expect($GrecaptchaProvider.setLanguageCode.bind($GrecaptchaProvider, item))
+                    expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, 'languageCode', item))
                     .to.throw(Error, '[$grecaptcha:badlan] The languageCode is invalid.');
                 });
             });
@@ -263,7 +263,7 @@ describe('Grecaptcha provider', function(){
                     
                     if(ind == 5) {
                         expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, item))
-                        .to.throw(Error, '[$grecaptcha:badexpcb] A expired-callback has to a function.');
+                        .to.throw(Error, '[$grecaptcha:badexpcb] A expired-callback has to a function or a array of functions.');
                     }
                     else if(ind == 6) {
                         expect($GrecaptchaProvider.set.bind($GrecaptchaProvider, item))

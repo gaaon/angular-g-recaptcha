@@ -1,6 +1,6 @@
 {
   "name": "angular-g-recaptcha",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "homepage": "https://github.com/Wooooo/angular-g-recaptcha",
   "authors": [
     {
@@ -24,7 +24,8 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "^1.4.7"
+    "angular": "^1.4.7",
+    "angular-animate": "~1.4.7"
   },
   "license": "MIT",
   "moduleType": [

@@ -1,3 +1,149 @@
+/**
+ * @name angular-g-recaptcha
+ * @version v2.0.1
+ * @author Taewoo Kim xodn4195@gmail.com
+ * @license MIT
+ */
+(function(window, angular){
+
+/**
+ * Checks if `obj` is a scope object.
+ *
+ * @private
+ * @param {*} obj Object to check
+ * @returns {boolean} True if `obj` is a scope obj.
+ * 
+ * @from angular source code
+ */
+function isScope(obj) {
+  return obj && obj.$evalAsync && obj.$watch;
+}
+
+/**
+ * Checks if `obj` is a window object.
+ *
+ * @private
+ * @param {*} obj Object to check
+ * @returns {boolean} True if `obj` is a window obj.
+ * 
+ * @from angular source code
+ */
+function isWindow(obj) {
+  return obj && obj.window === obj;
+}
+
+/**
+ * @private
+ * @description
+ * Replace 'key' and 'value' to json string
+ * 
+ * 
+ * @param {*} key the key of object to replace
+ * @param {*} value the value of object to replace
+ * @returns {string} The result to replace
+ * 
+ * @from angular source code
+ */
+function toJsonReplacer(key, value) {
+  var val = value;
+
+  if (typeof key === 'string' && key.charAt(0) === '$' && key.charAt(1) === '$') {
+    val = undefined;
+  } else if (isWindow(value)) {
+    val = '$WINDOW';
+  } else if (value &&  document === value) {
+    val = '$DOCUMENT';
+  } else if (isScope(value)) {
+    val = '$SCOPE';
+  }
+
+  return val;
+}
+
+/**
+ * @private
+ * @description
+ * Serialize 'obj' into string
+ * 
+ * @param {*} obj Object to serialzize
+ * @returns {string} Serialized result
+ */
+function serializeObject(obj) {
+  var seen = [];
+
+  return JSON.stringify(obj, function(key, val) {
+    val = toJsonReplacer(key, val);
+    if (angular.isObject(val)) {
+
+      if (seen.indexOf(val) >= 0) return '...';
+
+      seen.push(val);
+    }
+    return val;
+  });
+}
+
+/**
+ * @private
+ * @description
+ * Convert 'obj' into string
+ * 
+ * @param {*} obj Object to convert
+ * @returns {string} Converted result
+ */
+function toDebugString(obj) {
+  if (typeof obj === 'function') {
+    return obj.toString().replace(/ \{[\s\S]*$/, '');
+  } else if (angular.isUndefined(obj)) {
+    return 'undefined';
+  } else if (typeof obj !== 'string') {
+    return serializeObject(obj);
+  }
+  return obj;
+}
+
+
+/***
+ * @private
+ * @from angularjs source code for error handler
+ **/
+function minErr(module, ErrorConstructor) { // from angularjs source code
+  ErrorConstructor = ErrorConstructor || Error;
+  return function() {
+    var SKIP_INDEXES = 2;
+
+    var templateArgs = arguments,
+      code = templateArgs[0],
+      message = '[' + (module ? module + ':' : '') + code + '] ',
+      template = templateArgs[1],
+      paramPrefix, i;
+    
+    message += template.replace(/\{\d+\}/g, function(match) {
+      var index = +match.slice(1, -1),
+        shiftedIndex = index + SKIP_INDEXES;
+
+      if (shiftedIndex < templateArgs.length) {
+        return toDebugString(templateArgs[shiftedIndex]);
+      }
+
+      return match;
+    });
+    
+    // don't need not yet, but may need someday..
+    
+    // message += '\nhttp://errors.angularjs.org/1.4.7/' +
+    //   (module ? module + '/' : '') + code;
+
+    // for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
+    //   message += paramPrefix + 'p' + (i - SKIP_INDEXES) + '=' +
+    //     encodeURIComponent(toDebugString(templateArgs[i]));
+    // }
+
+    return new ErrorConstructor(message);
+  };
+}
+
+
 var $greMinErr = minErr('$grecaptcha');
 
 /**
@@ -689,7 +835,7 @@ function $grecaptchaProvider($greLanguageCodes) {
     
     
     
-    this.$get = function($q, $window, $rootScope, $document, $timeout){
+    this.$get = ["$q", "$window", "$rootScope", "$document", "$timeout", function($q, $window, $rootScope, $document, $timeout){
         var greList = {};
         var map = {};
         
@@ -1284,5 +1430,528 @@ function $grecaptchaProvider($greLanguageCodes) {
         
         
         return $grecaptcha;
-    }
+    }]
 }
+$grecaptchaProvider.$inject = ["$greLanguageCodes"];
+
+
+/***
+ * @ngdoc service
+ * @name wo.grecaptcha.$greLanguageCodes
+ * @description available language codes
+ * <div class="devsite-article-body clearfix" itemprop="articleBody">
+    
+
+    <div class="devsite-table-wrapper"><table style="border: none;">
+      <tbody>
+        <tr>
+          <td style="border: none;">
+            <div class="devsite-table-wrapper"><table>
+              <tbody>
+                <tr align="left">
+                  <th>Language</th>
+                  <th>Value</th>
+                </tr>
+                <tr>
+                  <td>Arabic</td>
+                  <td>ar</td>
+                </tr>
+                <tr>
+                  <td>Afrikaans</td>
+                  <td>af</td>
+                </tr>
+                <tr>
+                  <td>Amharic</td>
+                  <td>am</td>
+                </tr>
+                <tr>
+                  <td>Armenian</td>
+                  <td>hy</td>
+                </tr>
+                <tr>
+                  <td>Azerbaijani</td>
+                  <td>az</td>
+                </tr>
+                <tr>
+                  <td>Basque</td>
+                  <td>eu</td>
+                </tr>
+                <tr>
+                  <td>Bengali</td>
+                  <td>bn</td>
+                </tr>
+                <tr>
+                  <td>Bulgarian</td>
+                  <td>bg</td>
+                </tr>
+                <tr>
+                  <td>Catalan</td>
+                  <td>ca</td>
+                </tr>
+                <tr>
+                  <td>Chinese (Hong Kong)</td>
+                  <td>zh-HK</td>
+                </tr>
+                <tr>
+                  <td>Chinese (Simplified)</td>
+                  <td>zh-CN</td>
+                </tr>
+                <tr>
+                  <td>Chinese (Traditional)</td>
+                  <td>zh-TW</td>
+                </tr>
+                <tr>
+                  <td>Croatian</td>
+                  <td>hr</td>
+                </tr>
+                <tr>
+                  <td>Czech</td>
+                  <td>cs</td>
+                </tr>
+                <tr>
+                  <td>Danish</td>
+                  <td>da</td>
+                </tr>
+                <tr>
+                  <td>Dutch</td>
+                  <td>nl</td>
+                </tr>
+                <tr>
+                  <td>English (UK)</td>
+                  <td>en-GB</td>
+                </tr>
+                <tr>
+                  <td>English (US)</td>
+                  <td>en</td>
+                </tr>
+                <tr>
+                  <td>Estonian</td>
+                  <td>et</td>
+                </tr>
+                <tr>
+                  <td>Filipino</td>
+                  <td>fil</td>
+                </tr>
+                <tr>
+                  <td>Finnish</td>
+                  <td>fi</td>
+                </tr>
+                <tr>
+                  <td>French</td>
+                  <td>fr</td>
+                </tr>
+                <tr>
+                  <td>French (Canadian)</td>
+                  <td>fr-CA</td>
+                </tr>
+                <tr>
+                  <td>Galician</td>
+                  <td>gl</td>
+                </tr>
+              </tbody>
+            </table></div>
+          </td>
+          <td style="border: none;">
+            <div class="devsite-table-wrapper"><table>
+              <tbody>
+                <tr align="left">
+                  <th>Language</th>
+                  <th>Value</th>
+                </tr>
+                <tr>
+                  <td>Georgian</td>
+                  <td>ka</td>
+                </tr>
+                <tr>
+                  <td>German</td>
+                  <td>de</td>
+                </tr>
+                <tr>
+                  <td>German (Austria)</td>
+                  <td>de-AT</td>
+                </tr>
+                <tr>
+                  <td>German (Switzerland)</td>
+                  <td>de-CH</td>
+                </tr>
+                <tr>
+                  <td>Greek</td>
+                  <td>el</td>
+                </tr>
+                <tr>
+                  <td>Gujarati</td>
+                  <td>gu</td>
+                </tr>
+                <tr>
+                  <td>Hebrew</td>
+                  <td>iw</td>
+                </tr>
+                <tr>
+                  <td>Hindi</td>
+                  <td>hi</td>
+                </tr>
+                <tr>
+                  <td>Hungarain</td>
+                  <td>hu</td>
+                </tr>
+                <tr>
+                  <td>Icelandic</td>
+                  <td>is</td>
+                </tr>
+                <tr>
+                  <td>Indonesian</td>
+                  <td>id</td>
+                </tr>
+                <tr>
+                  <td>Italian</td>
+                  <td>it</td>
+                </tr>
+                <tr>
+                  <td>Japanese</td>
+                  <td>ja</td>
+                </tr>
+                <tr>
+                  <td>Kannada</td>
+                  <td>kn</td>
+                </tr>
+                <tr>
+                  <td>Korean</td>
+                  <td>ko</td>
+                </tr>
+                <tr>
+                  <td>Laothian</td>
+                  <td>lo</td>
+                </tr>
+                <tr>
+                  <td>Latvian</td>
+                  <td>lv</td>
+                </tr>
+                <tr>
+                  <td>Lithuanian</td>
+                  <td>lt</td>
+                </tr>
+                <tr>
+                  <td>Malay</td>
+                  <td>ms</td>
+                </tr>
+                <tr>
+                  <td>Malayalam</td>
+                  <td>ml</td>
+                </tr>
+                <tr>
+                  <td>Marathi</td>
+                  <td>mr</td>
+                </tr>
+                <tr>
+                  <td>Mongolian</td>
+                  <td>mn</td>
+                </tr>
+                <tr>
+                  <td>Norwegian</td>
+                  <td>no</td>
+                </tr>
+                <tr>
+                  <td>Persian</td>
+                  <td>fa</td>
+                </tr>
+              </tbody>
+            </table></div>
+          </td>
+          <td style="border: none; vertical-align: top">
+            <div class="devsite-table-wrapper"><table>
+              <tbody>
+                <tr align="left">
+                  <th>Language</th>
+                  <th>Value</th>
+                </tr>
+                <tr>
+                  <td>Polish</td>
+                  <td>pl</td>
+                </tr>
+
+                <tr>
+                  <td>Portuguese</td>
+                  <td>pt</td>
+                </tr>
+                <tr>
+                  <td>Portuguese (Brazil)</td>
+                  <td>pt-BR</td>
+                </tr>
+                <tr>
+                  <td>Portuguese (Portugal)</td>
+                  <td>pt-PT</td>
+                </tr>
+                <tr>
+                  <td>Romanian</td>
+                  <td>ro</td>
+                </tr>
+                <tr>
+                  <td>Russian</td>
+                  <td>ru</td>
+                </tr>
+                <tr>
+                  <td>Serbian</td>
+                  <td>sr</td>
+                </tr>
+                <tr>
+                  <td>Sinhalese</td>
+                  <td>si</td>
+                </tr>
+                <tr>
+                  <td>Slovak</td>
+                  <td>sk</td>
+                </tr>
+                <tr>
+                  <td>Slovenian</td>
+                  <td>sl</td>
+                </tr>
+                <tr>
+                  <td>Spanish</td>
+                  <td>es</td>
+                </tr>
+                <tr>
+                  <td>Spanish (Latin America)</td>
+                  <td>es-419</td>
+                </tr>
+                <tr>
+                  <td>Swahili</td>
+                  <td>sw</td>
+                </tr>
+                <tr>
+                  <td>Swedish</td>
+                  <td>sv</td>
+                </tr>
+                <tr>
+                  <td>Tamil</td>
+                  <td>ta</td>
+                </tr>
+                <tr>
+                  <td>Telugu</td>
+                  <td>te</td>
+                </tr>
+                <tr>
+                  <td>Thai</td>
+                  <td>th</td>
+                </tr>
+                <tr>
+                  <td>Turkish</td>
+                  <td>tr</td>
+                </tr>
+                <tr>
+                  <td>Ukrainian</td>
+                  <td>uk</td>
+                </tr>
+                <tr>
+                  <td>Urdu</td>
+                  <td>ur</td>
+                </tr>
+                <tr>
+                  <td>Vietnamese</td>
+                  <td>vi</td>
+                </tr>
+                <tr>
+                  <td>Zulu</td>
+                  <td>zu</td>
+                </tr>
+              </tbody>
+            </table></div>
+          </td>
+        </tr>
+      </tbody>
+    </table></div>
+  </div>
+  
+  (from {@link https://developers.google.com/recaptcha/docs/language google recaptcha official site})
+ **/
+var $greLanguageCodes = {
+    "ar"        : "Arabic"
+,   "af"        : "Afrikaans"
+,   "am"        : "Amharic"
+,   "hy"        : "Armenian"
+,   "az"        : "Azerbaijani"
+,   "eu"        : "Basque"
+,   "bn"        : "Bengali"
+,   "bg"        : "Bulgarian"
+,   "ca"        : "Catalan"
+,   "zh-HK"     : "Chinese (Hong Kong)"
+,   "zh-CN"     : "Chinese (Simplified)"
+,   "zh-TW"     : "Chinese (Traditional)"
+,   "hr"        : "Croatian"
+,   "cs"        : "Czech"
+,   "da"        : "Danish"
+,   "nl"        : "Dutch"
+,   "en-GB"     : "English (UK)"
+,   "en"        : "English (US)"
+,   "et"        : "Estonian"
+,   "fil"       : "Filipino"
+,   "fi"        : "Finnish"
+,   "fr"        : "French"
+,   "fr-CA"     : "French (Canadian)"
+,   "gl"        : "Galician"
+,   "ka"        : "Georgian"
+,   "de"        : "German"
+,   "de-AT"     : "German (Austria)"
+,   "de-CH"     : "German (Switzerland)"
+,   "el"        : "Greek"
+,   "gu"        : "Gujarati"
+,   "iw"        : "Hebrew"
+,   "hi"        : "Hindi"
+,   "hu"        : "Hungarain"
+,   "is"        : "Icelandic"
+,   "id"        : "Indonesian"
+,   "it"        : "Italian"
+,   "ja"        : "Japanese"
+,   "kn"        : "Kannada"
+,   "ko"        : "Korean"
+,   "lo"        : "Laothian"
+,   "lv"        : "Latvian"
+,   "lt"        : "Lithuanian"
+,   "ms"        : "Malay"
+,   "ml"        : "Malayalam"
+,   "mr"        : "Marathi"
+,   "mn"        : "Mongolian"
+,   "no"        : "Norwegian"
+,   "fa"        : "Persian"
+,   "pl"        : "Polish"
+,   "pt"        : "Portuguese"
+,   "pt-BR"     : "Portuguese (Brazil)"
+,   "pt-PT"     : "Portuguese (Portugal)"
+,   "ro"        : "Romanian"
+,   "ru"        : "Russian"
+,   "sr"        : "Serbian"
+,   "si"        : "Sinhalese"
+,   "sk"        : "Slovak"
+,   "sl"        : "Slovenian"
+,   "es"        : "Spanish"
+,   "es-419"    : "Spanish (Latin America)"
+,   "sw"        : "Swahili"
+,   "sv"        : "Swedish"
+,   "ta"        : "Tamil"
+,   "te"        : "Telugu"
+,   "th"        : "Thai"
+,   "tr"        : "Turkish"
+,   "uk"        : "Ukrainian"
+,   "ur"        : "Urdu"
+,   "vi"        : "Vietnamese"
+,   "zu"        : "Zulu"
+};
+
+
+/**
+ * @ngdoc directive
+ * @name wo.grecaptcha.$grecaptcha:grecaptcha
+ * 
+ * @restrict 'A'
+ * 
+ * @requires wo.grecaptcha.$grecaptcha
+ * @requires ng.$parse
+ * @requires ng.$document
+ * 
+ * @param {string=} gre-info Assignable angular expression to contain information about gre object
+ * @param {string} ng-model Assignable angular expression to data-bind to
+ * 
+ * @scope 
+ * 
+ * @description
+ * Set view value of model when recaptcha validating is done.<br>
+ * Reset view value if recaptcha be expired.
+ * 
+ * Load greInfo with information about gre object.
+ * 
+ * @example
+    <example module="greDemo">
+        <file name="index.html">
+            <div data-ng-controller="GreCtrl">
+                <div grecaptcha='{theme: "dark"}' gre-info="greInfo" data-ng-model="response">
+                    Loading..
+                </div>
+            </div>
+        </file>
+    
+        <file name="script.js">
+            angular.module('greDemo', ['wo.grecaptcha'])
+            .config(function($grecaptchaProvider) {
+                $grecaptchaProvider.set({
+                    sitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI", // test sitekey
+                });
+            })
+            .controller("GreCtrl", function($scope) {
+                $scope.response;
+                $scope.greInfo = {};
+                
+                var greInfoFind = $scope.$on('greInfo', function(event, greInfo) {
+                    if( !!greInfo ) {
+                        console.log(greInfo.widgetId); //widget id of rendered recaptcha box
+                        greInfoFind();
+                    }
+                });
+                
+                $scope.$on('response', function(event, response) {
+                    console.log(response); // response of recaptcha box
+                });
+            });
+        </file>
+    </example>
+ */
+function grecaptchaDirective($grecaptcha, $parse, $document){
+    
+    var directiveDefinitionObject = {
+        strict: 'A',
+        require: '^ngModel',
+        scope: {
+            info: '=greInfo'
+        },
+        link: function(scope, el, attr, ngModelCtrl){
+            
+            if( scope.info == void 0 ) scope.info = {};   
+            //This will not cause any side effect. Just for preventing undefined error at below
+            
+            var param = $parse(attr['grecaptcha'] || '{}')(scope);
+            var gre = $grecaptcha(param);
+            
+            function setViewValue(res) {
+                ngModelCtrl.$setViewValue(res);
+                
+                return res;
+            }
+            
+            gre.set({
+                callback: 
+                    [setViewValue].concat(gre.get('callback')),
+                
+                'expired-callback': 
+                    [ngModelCtrl.$setViewValue].concat(gre.get('expired-callback'))
+            });
+            
+            scope.info.promise = gre.init().then(function(){
+                el.empty();
+                
+                return gre.render(el[0], function(){
+                    angular.element($document[0].querySelector('.pls-container')).parent().remove();
+                });
+            }).then(function(){
+                scope.info.widgetId = gre.getWidgetId();
+                
+                return gre;
+            });
+        }
+    };
+    
+    return directiveDefinitionObject;
+}
+grecaptchaDirective.$inject = ["$grecaptcha", "$parse", "$document"];
+
+
+/**
+ * @ngdoc overview
+ * @name wo.grecaptcha
+ * 
+ * @description
+ * A module for grecaptcha
+ */
+var app = angular.module('wo.grecaptcha', [])
+.constant('$greLanguageCodes', $greLanguageCodes)
+.provider('$grecaptcha', $grecaptchaProvider)
+.directive('grecaptcha', grecaptchaDirective);
+
+})(window, window.angular)
