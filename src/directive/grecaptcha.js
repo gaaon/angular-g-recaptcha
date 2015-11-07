@@ -26,6 +26,8 @@
                 <div grecaptcha='{theme: "dark"}' gre-info="greInfo" data-ng-model="response">
                     Loading..
                 </div>
+                
+                <div style="word-wrap: break-word"> response : {{response}} </div>
             </div>
         </file>
     

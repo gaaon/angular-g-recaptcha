@@ -769,6 +769,7 @@ function $grecaptchaProvider($greLanguageCodes) {
          * 
          * @returns {Object} self
          */
+        //TODO add onReset
         gre.prototype.reset = function(){
             _grecaptcha.reset(_private(this)._widgetId);
         

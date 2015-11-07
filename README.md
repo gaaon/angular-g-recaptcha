@@ -18,6 +18,13 @@ bower
 - load recaptcha script automatically
 - wrap callbacks with $apply
 
+<a name="api"></a>
+## API
+
+Will be added here as soon as possible
+
+[link](http://wooooo.github.io/angular-g-recaptcha/docs)
+
 <a name="license"></a>
 ## License
 
