@@ -702,7 +702,7 @@ function $grecaptchaProvider($greLanguageCodes) {
          */
         function _private(target) {
             if( map[target] === void 0 ) {
-                map[target] = new Object();
+                map[target] = {};
             }
             return map[target];
         }
@@ -739,9 +739,11 @@ function $grecaptchaProvider($greLanguageCodes) {
             _private(this)._config = config;
         }
         
+        // extends TinyEmitter
+        angular.extend(gre.prototype, TinyEmitter.prototype);
+        
         
         var greMinErr = minErr('gre');
-        
         
         
         /**
@@ -769,10 +771,9 @@ function $grecaptchaProvider($greLanguageCodes) {
          * 
          * @returns {Object} self
          */
-        //TODO add onReset
         gre.prototype.reset = function(){
+            this.emit("reset", this.getResponse()); //emit with response
             _grecaptcha.reset(_private(this)._widgetId);
-        
             return this;
         };
         
