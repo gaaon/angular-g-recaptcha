@@ -1,7 +1,7 @@
 {
   "name": "angular-g-recaptcha",
   "version": "3.1.0",
-  "description": "Angualr module for google recaptcha",
+  "description": "Angular module for google recaptcha",
   "main": "angular-g-recaptcha.js",
   "scripts": {
     "test": "gulp test"

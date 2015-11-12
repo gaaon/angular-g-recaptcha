@@ -8,8 +8,8 @@
       "email": "xodn4195@gmail.com"
     }
   ],
-  "description": "Angular implementation of Google recaptcha",
-  "main": "grecaptcha.js",
+  "description": "Angular module for google recaptcha",
+  "main": "angular-g-recaptcha.js",
   "keywords": [
     "recaptcha",
     "angular",
@@ -28,13 +28,13 @@
   ],
   "dependencies": {
     "angular": "^1.4.7",
-    "angular-animate": "~1.4.7"
+    "angular-animate": "^1.4.7"
   },
   "license": "MIT",
   "moduleType": [
     "globals"
   ],
   "devDependencies": {
-    "angular-mocks": "~1.4.7"
+    "angular-mocks": "^1.4.7"
   }
 }
