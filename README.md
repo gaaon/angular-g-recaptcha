@@ -35,7 +35,7 @@ In html
     <body>
         ...
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script> 
-        <script src="path/to/bower_components/angular-g-recaptcha/angualr-g-recaptcha.js"></script> 
+        <script src="path/to/bower_components/angular-g-recaptcha/angular-g-recaptcha.js"></script> 
         <script>
             var myApp = angular.module('myApp', ['wo.grecaptcha']);
         </script> 
@@ -63,7 +63,7 @@ In html
 
 **$grecaptchaProvider**
 
-Allow set recaptcha config, languageCode, onLoadMethodName in config phase.
+Allow set recaptcha 'default' config, languageCode, onLoadMethodName in config phase.
 
 
 ```javascript
@@ -132,7 +132,7 @@ var app = angular.moudule('myApp', ['wo.grecaptcha'])
 ```
 
 ```javascript
-// ctlr.js
+// ctrl.js
 app.controllers('greCtrl', function($scope) {
     $scope.info = {};   // an object where gre promise and widget id will be contained
     
