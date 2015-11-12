@@ -1,6 +1,6 @@
 /**
  * @name angular-g-recaptcha
- * @version v3.0.0
+ * @version v3.1.0
  * @author Taewoo Kim xodn4195@gmail.com
  * @license MIT
  */
@@ -144,6 +144,22 @@ function minErr(module, ErrorConstructor) { // from angularjs source code
 }
 
 
+/**
+ * @from https://github.com/isaacs/inherits
+ */
+function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor;
+    ctor.prototype = Object.create(superCtor.prototype, {
+        constructor: {
+            value: ctor,
+            enumerable: false,
+            writable: true,
+            configurable: true
+        }
+    });
+}
+
+
 var $greMinErr = minErr('$grecaptcha');
 
 /**
@@ -154,7 +170,7 @@ var $greMinErr = minErr('$grecaptcha');
  * 
  * 
  * @description 
- * Grecaptcha provider which allow set recaptcha configs, languageCode, onLoadMethodName
+ * Provider for $grecaptcha service
  * 
  **/
 function $grecaptchaProvider($greLanguageCodes) {
@@ -203,16 +219,11 @@ function $grecaptchaProvider($greLanguageCodes) {
      * 
      * @param {string=} key property name
      * @param {*=} value property value
-     * @param {Object} target the target which be set key and value
+     * @param {Object} ctx the target which be set key and value
      * @returns {Object} self
      */
-    function setValue(key, value, target) {
-        if( target === void 0 ) {
-            _parameters[key] = value;
-        }
-        else {
-            target[key] = value;
-        }
+    function setValue(key, value, ctx) {
+        (ctx || _parameters)[key] = value;
     }
     
     
@@ -277,14 +288,13 @@ function $grecaptchaProvider($greLanguageCodes) {
      * @returns {Object} self
      */
     this.setTheme = function(theme){
+        
         //validate phase
         var themes = ['dark', 'light'];
         
-        if( angular.isString(theme) ) {
-            theme = angular.lowercase(theme);
-        }
+        theme = angular.isString(theme) ? theme.toLowerCase() : void 0;
         
-        if( themes.indexOf(theme) === -1 ) {
+        if( !theme || themes.indexOf(theme) === -1 ) {
             throw new $greMinErr('badtheme', 'A theme has to be one of {0}.', themes);
         }
         
@@ -327,14 +337,13 @@ function $grecaptchaProvider($greLanguageCodes) {
      * @returns {Object} self
      */
     this.setType = function(type) {
+        
         //validate phase
         var types = ['audio', 'image'];
         
-        if( angular.isString(type) ) {
-            type = angular.lowercase(type);
-        }
+        type = angular.isString(type) ? type.toLowerCase() : void 0;
         
-        if( types.indexOf(type) === -1 ) {
+        if( !type || types.indexOf(type) === -1 ) {
             throw new $greMinErr('badtype', 'A type has to be one of {0}.', types);
         }
         
@@ -377,11 +386,9 @@ function $grecaptchaProvider($greLanguageCodes) {
         //validate phase
         var sizes = ['compact', 'normal'];
         
-        if( angular.isString(size) ) {
-            size = angular.lowercase(size);
-        }
+        size = angular.isString(size) ? size.toLowerCase() : void 0;
         
-        if( sizes.indexOf(size) === -1 ) {
+        if( !size || sizes.indexOf(size) === -1 ) {
             throw new $greMinErr('badsize', 'A size has to be one of {0}.', sizes);
         }
         
@@ -389,7 +396,7 @@ function $grecaptchaProvider($greLanguageCodes) {
         setValue('size', size, arguments[1]);
         
         return self;
-    }
+    };
     
     
     
@@ -424,7 +431,7 @@ function $grecaptchaProvider($greLanguageCodes) {
         setValue('tabindex', tabindex, arguments[1]);
         
         return self;
-    }
+    };
     
     
     
@@ -454,8 +461,8 @@ function $grecaptchaProvider($greLanguageCodes) {
      * @returns {Object} self
      */
     this.setCallback = function(callback) {
+        
         //validate phase
-        //TODO allow callback arrays to be executed
         if( !angular.isFunction(callback) && !angular.isArray(callback)) {
             throw new $greMinErr('badcb', 
                 'A callback has to be a function or a array of functions.');
@@ -465,7 +472,7 @@ function $grecaptchaProvider($greLanguageCodes) {
         setValue('callback', callback, arguments[1]);
         
         return self;
-    }
+    };
     
     
     
@@ -492,8 +499,8 @@ function $grecaptchaProvider($greLanguageCodes) {
      * @returns {Object} self
      */
     this.setExpiredCallback = function(expiredCallback) {
+        
         //validate phase
-        //TODO allow callback arryas to be executed
         if( !angular.isFunction(expiredCallback) && !angular.isArray(expiredCallback) ) {
             throw new $greMinErr('badexpcb', 
                 'A expired-callback has to a function or a array of functions.');
@@ -503,7 +510,7 @@ function $grecaptchaProvider($greLanguageCodes) {
         setValue('expired-callback', expiredCallback, arguments[1]);
         
         return self;
-    }
+    };
     
     
     /**
@@ -714,22 +721,24 @@ function $grecaptchaProvider($greLanguageCodes) {
         if( angular.isObject(args[0]) ) {
             var params = args[0], includeOthers = args[1];
             
-            angular.forEach(params, function(value, key) {
+            
+            for(var key in params) {
+                if( !params.hasOwnProperty(key) ) continue;
                 
-                if( includeOthers ) { // if includeOthers true, do nothing
-                    
-                    try{
-                        that.set(key, value);
-                    }catch(e) {}
+                
+                try {
+                    that.set(key, params[key]);
+                } 
+                catch(e) {
+                    // if includeOthers is true, ignoring the error
+                    if( !includeOthers ) throw e;
                 }
-                else { // else throws an error if key doesn't exist
-                    that.set(key, value);
-                }
-            });
+            }
         }
         
         else if( angular.isString(args[0]) ) {
             var key = args[0], value = args[1];
+            
             
             if( provider_properties.indexOf(key) !== -1 ) {
                 var methodName = camelCase('set-'+key);
@@ -835,10 +844,9 @@ function $grecaptchaProvider($greLanguageCodes) {
     
     
     
-    this.$get = ["$q", "$window", "$rootScope", "$document", "$timeout", function($q, $window, $rootScope, $document, $timeout){
-        var greList = {};
-        var map = {};
-        
+    this.$get = ["$q", "$window", "$rootScope", "$document", "$timeout", "TinyEmitterFactory", function($q, $window, $rootScope, $document, $timeout, TinyEmitterFactory){
+        var greList = {};   // key: widget Id, value: greInstance
+        var map = {};       //weakMap for using private variables
         
         /**
          * @private
@@ -847,10 +855,7 @@ function $grecaptchaProvider($greLanguageCodes) {
          * If not exists, generate it and insert.
          */
         function _private(target) {
-            if( map[target] === void 0 ) {
-                map[target] = new Object();
-            }
-            return map[target];
+            return (map[target] || (map[target] = {}));
         }
         
         
@@ -860,9 +865,7 @@ function $grecaptchaProvider($greLanguageCodes) {
          * Delete 'target' from private map object.
          */
         function delete_private(target) {
-            if( map[target] !== void 0 ) {
-                delete map[target];
-            }
+            delete map[target];
         }
         
         /**
@@ -886,8 +889,38 @@ function $grecaptchaProvider($greLanguageCodes) {
         }
         
         
-        var greMinErr = minErr('gre');
+        /**
+         * @ngdoc function
+         * 
+         * @name wo.grecaptcha.$grecaptcha:gre#on
+         * @methodOf wo.grecaptcha.$grecaptcha:gre
+         * 
+         * @description
+         * Register a 'listener' on the 'event'.
+         * 
+         * @param {string} event name of a event
+         * @param {Function} listener event listener
+         * 
+         * @example
+         * <pre>
+         * 
+         * gre.on('destroy', function() {
+         *  //...
+         * });
+         * 
+         * gre.on('reset', function(response) {
+         *  //...
+         * });
+         * 
+         * </pre>
+         * 
+         * @returns {Object} self
+         */
+         
+        inherits(gre, TinyEmitterFactory);
         
+        
+        var greMinErr = minErr('gre');
         
         
         /**
@@ -915,9 +948,28 @@ function $grecaptchaProvider($greLanguageCodes) {
          * 
          * @returns {Object} self
          */
-        gre.prototype.reset = function(){
-            _grecaptcha.reset(_private(this)._widgetId);
         
+        /**
+         * @ngdoc event
+         * 
+         * @name wo.grecaptcha.$grecaptcha:gre#reset
+         * @eventOf wo.grecaptcha.$grecaptcha:gre
+         * @eventType emit on gre instance
+         * @description
+         * Event fired when reset method is executed.
+         * 
+         * @param {string} response recaptcha box's response
+         * 
+         * @example
+         * <pre>
+         * gre.on('reset', function(response) {
+         *      console.log(response);      // recaptcha box response
+         * });
+         * </pre>
+         */
+        gre.prototype.reset = function(){
+            this.emit("reset", this.getResponse()); //emit with response
+            _grecaptcha.reset(_private(this)._widgetId);
             return this;
         };
         
@@ -973,7 +1025,7 @@ function $grecaptchaProvider($greLanguageCodes) {
          */
         gre.prototype.getElement = function() {
             return _private(this)._element;
-        }
+        };
         
         
         
@@ -1046,18 +1098,20 @@ function $grecaptchaProvider($greLanguageCodes) {
                 return init_promise;
             }
             
-            
             return init_promise = $q(function(resolve, reject) {
                 $timeout(function(){
-                    reject(new greMinErr('srcdelay', 
-                        'A recaptcha script load is timed out.'));
+                    var error = new greMinErr('srcdelay', 'A recaptcha script load is timed out.');
+                    
+                    reject(error);
                 }, _scriptLoadTimeout);
                 
                 
                 $window[_onLoadMethodName] = function(){
                     $rootScope.$apply(function(){
-                        (onInit || angular.noop)();
                         self.setGrecaptcha($window.grecaptcha);
+                        
+                        (onInit || angular.noop)();
+                        
                         resolve(that);
                     });
                 };
@@ -1088,15 +1142,30 @@ function $grecaptchaProvider($greLanguageCodes) {
          * @description
          * Delete the gre instance from private map object and greList.
          */ 
+         
+        /**
+         * @ngdoc event
+         * @name wo.grecaptcha.$grecaptcha:gre#destroy
+         * @eventOf wo.grecaptcha.$grecaptcha:gre
+         * @eventType emit on gre instance
+         * @description
+         * Event fired when gre instance is destroyed.
+         * 
+         * @example
+         * <pre>
+         * gre.on('destroy', function(){
+         *      console.log('Destroyed!!');
+         * });
+         * </pre>
+         */
         gre.prototype.remove = function(){
-            var widgetId = _private(this)._widgetId;
+            this.emit("destroy");
             
-            if( widgetId !== void 0 ) {
-                delete greList[widgetId];
-            }
+            this.destroyEmitter();
             
+            delete greList[_private(this)._widgetId];
             delete_private(this);
-        }
+        };
         
         
         
@@ -1131,61 +1200,56 @@ function $grecaptchaProvider($greLanguageCodes) {
         gre.prototype.render = function(el, onDestroy, onInit){
             var that = this, internal = _private(this);
             
-            if( !angular.isElement(el) ) {
-                throw new greMinErr('badel', 'The element is invalid.');
-            }
-            if( internal._config['sitekey'] == void 0 ) {
-                throw new greMinErr('nositekey', 'The sitekey has to be provided.');
-            }
-            
+            // if gre has widgetId return promise
             if( internal._widgetId !== void 0 ) {
                 return $q.when(this);
             }
             
-            return this.init(onInit).then(function(){
-                var config = {};
-                var cb = internal._config['callback'];
-                var exp_cb = internal._config['expired-callback'];
+            // validate element
+            if( !angular.isElement(el) ) {
+                throw new greMinErr('badel', 'The element is invalid.');
+            }
+            
+            if( internal._config['sitekey'] === void 0 ) {
+                throw new greMinErr('nositekey', 'The sitekey has to be provided.');
+            }
+            
+            function wrap(param) {
+                var promiseArr = [].concat(param);
                 
-                
-                function wrap(param) {
-                    var ret = undefined;
+                var ret = function(value) {
+                    var promise = $q.when(value);
                     
-                    if( angular.isFunction(param) ) {
-                        var fn = param;
-                        ret =  function(value){
-                            fn.call(this, value);
-                        };
+                    for(var i = 0 ; i < promiseArr.length ; i++) {
+                        promise = promise.then(promiseArr[i]);
                     }
                     
-                    else if( angular.isArray(param) ) {
-                        var arr = param;
-                        
-                        ret = function(value) {
-                            var promise = $q.when(value);
-                            
-                            for(var i = 0 ; i < arr.length ; i++) {
-                                promise = promise.then(arr[i]);
-                            }
-                            
-                            promise.catch(function(reason){
-                                throw new Error(reason);
-                            });
-                        }
-                    }
-                    
-                    return ret;
+                    promise.catch(function(reason){
+                        throw new Error(reason);
+                    });
                 }
                 
-                config = angular.extend({}, internal._config, 
-                    {callback: wrap(cb), 'expired-callback': wrap(exp_cb)});
+                return ret;
+            }
+            
+            return this.init(onInit).then(function(){
+                var config = angular.copy(internal._config);
                 
-                internal._widgetId = _grecaptcha.render(el, config);
-                internal._element = angular.element(el);
                 
+                angular.extend(config, {
+                    callback: wrap(config['callback']), 
+                    'expired-callback': wrap(config['expired-callback'])
+                    
+                });
+                
+                angular.extend(internal, {
+                    _widgetId   : _grecaptcha.render(el, config),
+                    _element    : angular.element(el)
+                });
                 
                 internal._element.on('$destroy', function(){
                     that.remove();
+                    
                     (onDestroy || angular.noop)();
                 });
                 
@@ -1236,18 +1300,18 @@ function $grecaptchaProvider($greLanguageCodes) {
             var args = arguments, that = this;
             
             if( angular.isObject(args[0]) ) {
-                var param = args[0], includeOthers = args[1];
+                var params = args[0], includeOthers = args[1];
                 
-                angular.forEach(param, function(value, key) {
-                    if( !!includeOthers ) {
-                        try {
-                            that.set(key, value);
-                        } catch(e) {}
+                for(var key in params) {
+                    if( !params.hasOwnProperty(key) ) continue;
+                    
+                    try {
+                        that.set(key, params[key]);
+                    } 
+                    catch(e) {
+                        if( !includeOthers ) throw e;
                     }
-                    else {
-                        that.set(key, value);
-                    }
-                });
+                }
             }
             
             else if( angular.isString(args[0]) ) {
@@ -1298,7 +1362,10 @@ function $grecaptchaProvider($greLanguageCodes) {
                  return _private(this)._config[key];
             }
             
-            return void 0;
+            else {
+                throw new greMinErr('getnosuchkey', 
+                    'There is no such key {0} in {1}.', key, config_properties);
+            }
         };
         
         
@@ -1837,6 +1904,106 @@ var $greLanguageCodes = {
 };
 
 
+function TinyEmitterFactory() {
+    /**
+     *  This code is made by scottcorgan.
+     * 
+     *  And updated by Taewoo a little.
+     * 
+     *  https://github.com/scottcorgan/tiny-emitter
+     */
+     
+    /**
+     * Is it right to delete this Emitter?
+     * Can AngualrEmitter be a alternative?
+     * 
+     */
+    function TinyEmitter () {
+    	// Keep this empty so it's easier to inherit from
+      // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+    }
+    
+    TinyEmitter.prototype = {
+        addListener: function (event, callback, ctx, once) {
+            var listeners = this.$$listeners || (this.$$listeners = {});
+            
+            (listeners[event] || (listeners[event] = [])).push({
+                callback: callback,
+                ctx: ctx,
+                once: once
+            });
+    
+            return this;
+        },
+        
+        
+        on : function() {
+            return this.addListener.apply(this, arguments);
+        },
+        
+        
+        once: function (event, listener, ctx) {
+            return this.on(event, listener, ctx, true);
+        },
+        
+        
+        emit: function (event) {
+            var data = [].slice.call(arguments, 1);
+            var lstArr = ((this.$$listeners || (this.$$listeners = {}))[event] || []).slice();
+            
+            
+            for (var i = 0, len = lstArr.length ; i < len ; i++) {
+                var lst = lstArr[i];
+                
+                lst.callback.apply(lst.ctx, data);
+                
+                if(lst.once) this.off(event, lst.callback);
+            }
+    
+            return this;
+        },
+        
+            
+        removeListener: function (event, callback) {
+            var listeners = (this.$$listeners || (this.$$listeners = {}))[event];
+            var live = [];
+    
+            
+            if (listeners && callback) {
+                for (var i = 0, len = listeners.length; i < len; i++) {
+                    if (listeners[i].callback !== callback)
+                        live.push(listeners[i]);
+                }
+            }
+    
+            (live.length) ? this.$$listeners[event] = live : delete this.$$listeners[event];
+        
+            return this;
+        },
+        
+        
+        off: function() {
+            return this.removeListener.apply(this, arguments);  
+        },
+        
+        
+        removeAllListener: function(event) {
+            event ? this.removeListener(event) : delete this.listeners;
+            
+            return this;
+        },
+        
+        
+        //added
+        destroyEmitter: function() {
+            this.removeAllListener();
+        }
+    };
+    
+    return TinyEmitter;
+}
+
+
 /**
  * @ngdoc directive
  * @name wo.grecaptcha.$grecaptcha:grecaptcha
@@ -1865,6 +2032,8 @@ var $greLanguageCodes = {
                 <div grecaptcha='{theme: "dark"}' gre-info="greInfo" data-ng-model="response">
                     Loading..
                 </div>
+                
+                <div style="word-wrap: break-word"> response : {{response}} </div>
             </div>
         </file>
     
@@ -1903,7 +2072,7 @@ function grecaptchaDirective($grecaptcha, $parse, $document){
         },
         link: function(scope, el, attr, ngModelCtrl){
             
-            if( scope.info == void 0 ) scope.info = {};   
+            scope.info || (scope.info = {});   
             //This will not cause any side effect. Just for preventing undefined error at below
             
             var param = $parse(attr['grecaptcha'] || '{}')(scope);
@@ -1920,15 +2089,17 @@ function grecaptchaDirective($grecaptcha, $parse, $document){
                     [setViewValue].concat(gre.get('callback')),
                 
                 'expired-callback': 
-                    [ngModelCtrl.$setViewValue].concat(gre.get('expired-callback'))
+                    [setViewValue].concat(gre.get('expired-callback'))
             });
+            
+            gre.on('reset', setViewValue);
+            
+            gre.on('destroy', angular.element($document[0].querySelector('.pls-container')).parent().remove);
             
             scope.info.promise = gre.init().then(function(){
                 el.empty();
                 
-                return gre.render(el[0], function(){
-                    angular.element($document[0].querySelector('.pls-container')).parent().remove();
-                });
+                return gre.render(el[0]);
             }).then(function(){
                 scope.info.widgetId = gre.getWidgetId();
                 
@@ -1952,6 +2123,7 @@ grecaptchaDirective.$inject = ["$grecaptcha", "$parse", "$document"];
 var app = angular.module('wo.grecaptcha', [])
 .constant('$greLanguageCodes', $greLanguageCodes)
 .provider('$grecaptcha', $grecaptchaProvider)
-.directive('grecaptcha', grecaptchaDirective);
+.directive('grecaptcha', grecaptchaDirective)
+.factory('TinyEmitterFactory', TinyEmitterFactory);
 
 })(window, window.angular)

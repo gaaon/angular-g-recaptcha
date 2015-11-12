@@ -1,6 +1,6 @@
 {
   "name": "angular-g-recaptcha",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "homepage": "https://github.com/Wooooo/angular-g-recaptcha",
   "authors": [
     {
@@ -13,8 +13,11 @@
   "keywords": [
     "recaptcha",
     "angular",
-    "captcha",
-    "google"
+    "grecaptcha",
+    "angular-recaptcha",
+    "angular-g-recaptcha",
+    "google",
+    "google-recaptcha"
   ],
   "ignore": [
     "**/.*",

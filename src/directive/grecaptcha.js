@@ -66,7 +66,7 @@ function grecaptchaDirective($grecaptcha, $parse, $document){
         },
         link: function(scope, el, attr, ngModelCtrl){
             
-            if( scope.info == void 0 ) scope.info = {};   
+            scope.info || (scope.info = {});   
             //This will not cause any side effect. Just for preventing undefined error at below
             
             var param = $parse(attr['grecaptcha'] || '{}')(scope);
@@ -83,15 +83,17 @@ function grecaptchaDirective($grecaptcha, $parse, $document){
                     [setViewValue].concat(gre.get('callback')),
                 
                 'expired-callback': 
-                    [ngModelCtrl.$setViewValue].concat(gre.get('expired-callback'))
+                    [setViewValue].concat(gre.get('expired-callback'))
             });
+            
+            gre.on('reset', setViewValue);
+            
+            gre.on('destroy', angular.element($document[0].querySelector('.pls-container')).parent().remove);
             
             scope.info.promise = gre.init().then(function(){
                 el.empty();
                 
-                return gre.render(el[0], function(){
-                    angular.element($document[0].querySelector('.pls-container')).parent().remove();
-                });
+                return gre.render(el[0]);
             }).then(function(){
                 scope.info.widgetId = gre.getWidgetId();
                 

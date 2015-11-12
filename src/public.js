@@ -8,4 +8,5 @@
 var app = angular.module('wo.grecaptcha', [])
 .constant('$greLanguageCodes', $greLanguageCodes)
 .provider('$grecaptcha', $grecaptchaProvider)
-.directive('grecaptcha', grecaptchaDirective);
+.directive('grecaptcha', grecaptchaDirective)
+.factory('TinyEmitterFactory', TinyEmitterFactory);

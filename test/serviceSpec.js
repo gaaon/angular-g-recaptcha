@@ -59,7 +59,7 @@ describe('Grecaptcha service', function(){
             },
             
             reset: function(widgetId) {
-                
+                response = undefined;
             },
             
             getResponse: function(widgetId) {
@@ -95,7 +95,10 @@ describe('Grecaptcha service', function(){
         
         spy.restore();
         response = undefined;
-        document.querySelector('body').removeChild(el);
+        
+        try {
+            document.querySelector('body').removeChild(el);
+        } catch(e) {}
     });
     
     
@@ -257,4 +260,63 @@ describe('Grecaptcha service', function(){
         expect(res_array).to.have.length(1);
     });
     
+    
+    
+    it('should emit a "reset" when render method is executed.', function(){
+        var gre = $grecaptcha().set({'sitekey' :sitekey});
+        
+        var spy = sinon.spy();
+        
+        var that = gre.on("reset", spy);
+        
+        gre.reset();
+        
+        expect(spy).to.be.calledOnce;
+        expect(spy).to.be.calledWith(undefined);
+        
+        gre.reset();
+        gre.reset();
+        
+        expect(spy).to.be.calledThrice;
+        expect(that).to.be.eql(gre);
+    });
+    
+    
+    it('should emit a "reset" and pass response with reset event.', function(){
+        var gre = $grecaptcha().set({'sitekey' :sitekey});
+        
+        var spy = sinon.spy();
+        
+        gre.on("reset", spy);
+        
+        gre.render(el).should.be.fulfilled;
+        $rootScope.$apply();
+        $timeout.flush();
+        
+        gre.reset();
+        
+        expect(spy).to.be.calledOnce;
+        expect(spy).to.be.calledWith('fake response');
+        
+        gre.reset();
+        
+        expect(spy).to.be.calledTwice;
+        expect(spy).to.be.calledWith(undefined);
+    });
+    
+    
+    it('should emit a "destroy" when element be removed.', function(){
+        var gre = $grecaptcha().set({'sitekey' :sitekey});
+        
+        var spy = sinon.spy();
+        
+        gre.on("destroy", spy);
+        
+        gre.render(el).should.be.fulfilled;
+        $rootScope.$apply();
+        
+        angular.element(el).remove();
+        expect(spy).to.be.calledOnce;
+        
+    });
 });

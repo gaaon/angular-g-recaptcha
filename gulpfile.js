@@ -6,7 +6,8 @@ const   gulp        = require('gulp')
     }
 })
 ,       pkg         = require('./package.json')
-,       browserSync = require('browser-sync').create();
+,       browserSync = require('browser-sync').create()
+,       karma       = require('karma').Server;
 
 var banner = ['/**'
 ,   ' * @name <%= pkg.name %>'
@@ -18,20 +19,13 @@ var banner = ['/**'
 ].join('\n');
 
 
-gulp.task('build:coffee', function() {
-    return gulp.src('src/recaptcha.coffee')
-        .pipe($.coffee({bare:true, 'no-header':true}))
-        .pipe($.ngAnnotate({add:true, remove:true}))
-        .pipe($.rename('angular-g-recaptcha.js'))
-        .pipe(gulp.dest('./'));
-});
-
-
 
 gulp.task('build:concat', function(){
     return gulp.src(
         [
             'src/minErr.js',
+            'src/inherits.js',
+            '!src/angularEmitter.js',
             'src/**/!(public)*.js',
             'src/public.js'
         ])
@@ -126,17 +120,21 @@ gulp.task('doc:ngdoc', ['build'], function(){
 
 
 
-// gulp.task('jsdoc:less', function(){
-//     return gulp.src('jsdoc/static/my.less')
-//     .pipe($.less())
-//     .pipe(gulp.dest('jsdoc/static'));
-// });
-
-
-
 gulp.task('watch', ['browserSync:init'], function() {
     gulp.watch(['src/**/*.js'], ['build']).on('change', browserSync.reload);
     gulp.watch(['example/**/*.html']).on('change', browserSync.reload);
+});
+
+
+gulp.task('test', ['build'], function (done) {
+    new karma({
+        configFile: __dirname + '/karma.conf.js',
+        browsers: ['PhantomJS'],
+        singleRun: true
+        }, function(){
+            done();
+        }
+    ).start();
 });
 
 
@@ -145,3 +143,5 @@ gulp.task('build', ['build:header', 'build:uglify']);
 gulp.task('default', ['build', 'watch']);
 
 gulp.task('ngdoc', ['doc:ngdoc', 'watch:ngdoc', 'webserver:ngdoc']);
+
+

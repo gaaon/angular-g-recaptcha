@@ -90,6 +90,26 @@ gre.init(function(){
 </div></div>
 </div>
 </li>
+<li><h3 id="methods_on">on(event, listener)</h3>
+<div class="on"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-on-page"><p>Register a &#39;listener&#39; on the &#39;event&#39;.</p>
+</div><h5 id="methods_on_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>event</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-on-page"><p>name of a event</p>
+</div></td></tr><tr><td>listener</td><td><a href="" class="label type-hint type-hint-function">Function</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-on-page"><p>event listener</p>
+</div></td></tr></tbody></table><h5 id="methods_on_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-on-page"><p>self</p>
+</div></td></tr></table><h4 id="methods_on_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-on-page"><pre class="prettyprint linenums">
+
+gre.on('destroy', function() {
+ //...
+});
+
+gre.on('reset', function(response) {
+ //...
+});
+
+</pre>
+</div></div>
+</div>
+</li>
 <li><h3 id="methods_remove">remove()</h3>
 <div class="remove"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-remove-page"><p>Delete the gre instance from private map object and greList.</p>
 </div><h4 id="methods_remove_example">Example</h4>
@@ -160,6 +180,40 @@ If first argument is string, this method is executed.</p>
 </div></td></tr><tr><td>value</td><td><a href="" class="label type-hint type-hint-object">*</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>A value of the key</p>
 </div></td></tr></tbody></table><h5 id="methods_set_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-set-page"><p>self</p>
 </div></td></tr></table></div>
+</li>
+</ul>
+</div>
+<div class="member event"><h2 id="events">Events</h2>
+<ul class="events"><li><h3 id="events_destroy">destroy</h3>
+<div class="destroy"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-destroy-page"><p>Event fired when gre instance is destroyed.</p>
+</div><div class="inline"><h4 id="events_destroy_type">Type:</h4>
+<div class="type">emit</div>
+</div>
+<div class="inline"></div>
+<h4 id="events_destroy_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-destroy-page"><pre class="prettyprint linenums">
+gre.on('destroy', function(){
+     console.log('Destroyed!!');
+});
+</pre>
+</div></div>
+</div>
+</li>
+<li><h3 id="events_reset">reset</h3>
+<div class="reset"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-reset-page"><p>Event fired when reset method is executed.</p>
+</div><div class="inline"><h4 id="events_reset_type">Type:</h4>
+<div class="type">emit</div>
+</div>
+<div class="inline"></div>
+<h5 id="events_reset_type_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>response</td><td><a href="" class="label type-hint type-hint-string">string</a></td><td><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-reset-page"><p>recaptcha box&#39;s response</p>
+</div></td></tr></tbody></table><h4 id="events_reset_example">Example</h4>
+<div class="example"><div class="wo-grecaptcha-grecaptcha-page wo-grecaptcha-grecaptcha-gre-reset-page"><pre class="prettyprint linenums">
+gre.on('reset', function(response) {
+     console.log(response);      // recaptcha box response
+});
+</pre>
+</div></div>
+</div>
 </li>
 </ul>
 </div>
