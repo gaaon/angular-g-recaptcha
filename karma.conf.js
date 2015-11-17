@@ -51,11 +51,11 @@ module.exports = function(config) {
 
 
     // web server port
-    port: process.env.PORT,
+    port: process.env.PORT || 9876,
 
     
     // web server hostname
-    hostname: process.env.IP,
+    hostname: process.env.IP || 'localhost',
     
     // enable / disable colors in the output (reporters and logs)
     colors: true,
