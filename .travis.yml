@@ -1,7 +1,12 @@
 language: node_js
 node_js:
   - "0.12"
-  
+
+sudo: false
+cache:
+  directories:
+    - node_modules
+    
 before_script:
   - npm install -g gulp bower
   - export PHANTOMJS_BIN=/usr/local/phantomjs/bin/phantomjs
