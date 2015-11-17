@@ -4,4 +4,6 @@ node_js:
   
 before_script:
   - npm install -g gulp
+  - export PHANTOMJS_BIN=/usr/local/phantomjs/bin/phantomjs
+  
 script: gulp test
