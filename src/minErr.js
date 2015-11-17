@@ -1,3 +1,8 @@
+/* global
+  angular,
+  document
+*/
+
 /**
  * Checks if `obj` is a scope object.
  *
@@ -99,7 +104,7 @@ function toDebugString(obj) {
  * @private
  * @from angularjs source code for error handler
  **/
-function minErr(module, ErrorConstructor) { // from angularjs source code
+function minErr(module, ErrorConstructor) { /*jshint ignore:line */
   ErrorConstructor = ErrorConstructor || Error;
   return function() {
     var SKIP_INDEXES = 2;
@@ -107,8 +112,8 @@ function minErr(module, ErrorConstructor) { // from angularjs source code
     var templateArgs = arguments,
       code = templateArgs[0],
       message = '[' + (module ? module + ':' : '') + code + '] ',
-      template = templateArgs[1],
-      paramPrefix, i;
+      template = templateArgs[1];
+      //paramPrefix, i
     
     message += template.replace(/\{\d+\}/g, function(match) {
       var index = +match.slice(1, -1),

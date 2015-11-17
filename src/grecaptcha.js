@@ -1,3 +1,8 @@
+/* global
+    angular,
+    minErr,
+    inherits
+ */
 var $greMinErr = minErr('$grecaptcha');
 
 /**
@@ -11,14 +16,14 @@ var $greMinErr = minErr('$grecaptcha');
  * Provider for $grecaptcha service
  * 
  **/
-function $grecaptchaProvider($greLanguageCodes) {
+function $grecaptchaProvider($greLanguageCodes) { /*jshint ignore:line */
     
     var _grecaptcha                 // grecaptcha Object
     ,   _languageCode               // languageCode value
     ,   _scriptTag                  // tag that contains recaptcha script
     ,   _scriptLoadTimeout = 5000   // miliseconds of load time out
     ,   self = this                 // this reference
-    ,   init_promise = undefined    // a promise of init method                 
+    ,   init_promise                // a promise of init method                 
                 
     // method name of recaptcha script callback
     ,   _onLoadMethodName = "onRecaptchaApiLoaded"
@@ -575,22 +580,22 @@ function $grecaptchaProvider($greLanguageCodes) {
         }
         
         else if( angular.isString(args[0]) ) {
-            var key = args[0], value = args[1];
+            var _key = args[0], value = args[1];
             
             
-            if( provider_properties.indexOf(key) !== -1 ) {
-                var methodName = camelCase('set-'+key);
+            if( provider_properties.indexOf(_key) !== -1 ) {
+                var methodName = camelCase('set-'+_key);
                 
                 that[methodName](value);
             }
             else {
                 throw new $greMinErr('setnosuchkey', 
-                    'There is no such key {0} in {1}.', key, provider_properties);
+                    'There is no such key {0} in {1}.', _key, provider_properties);
             }
         }
         
         return self;
-    }
+    };
 
     
     
@@ -651,7 +656,7 @@ function $grecaptchaProvider($greLanguageCodes) {
             throw new $greMinErr('getnosuchkey', 
                 'There is no such key {0} in {1}.', key, provider_properties);
         }
-    }
+    };
     
     
     /**
@@ -662,9 +667,9 @@ function $grecaptchaProvider($greLanguageCodes) {
      * so that init grecaptcha Object
      */
     function createScript($document){
-        var src = "//www.google.com/recaptcha/api.js?render=explicit&"
-                +"onload="+_onLoadMethodName
-                +(_languageCode ? "&hl="+_languageCode : "");
+        var src = "//www.google.com/recaptcha/api.js?render=explicit&"+
+                "onload="+_onLoadMethodName+
+                (_languageCode ? "&hl="+_languageCode : "");
             
         var option = {
             type    : "text/javascript"
@@ -889,7 +894,7 @@ function $grecaptchaProvider($greLanguageCodes) {
          */
         gre.prototype.getWidgetId = function() {
             return _private(this)._widgetId;
-        }
+        };
         
         
         
@@ -1048,7 +1053,7 @@ function $grecaptchaProvider($greLanguageCodes) {
                 throw new greMinErr('badel', 'The element is invalid.');
             }
             
-            if( internal._config['sitekey'] === void 0 ) {
+            if( internal._config.sitekey === void 0 ) {
                 throw new greMinErr('nositekey', 'The sitekey has to be provided.');
             }
             
@@ -1065,7 +1070,7 @@ function $grecaptchaProvider($greLanguageCodes) {
                     promise.catch(function(reason){
                         throw new Error(reason);
                     });
-                }
+                };
                 
                 return ret;
             }
@@ -1075,7 +1080,7 @@ function $grecaptchaProvider($greLanguageCodes) {
                 
                 
                 angular.extend(config, {
-                    callback: wrap(config['callback']), 
+                    callback: wrap(config.callback), 
                     'expired-callback': wrap(config['expired-callback'])
                     
                 });
@@ -1153,10 +1158,10 @@ function $grecaptchaProvider($greLanguageCodes) {
             }
             
             else if( angular.isString(args[0]) ) {
-                var key = args[0], value = args[1];
+                var _key = args[0], value = args[1];
                 
-                if( config_properties.indexOf(key) !== -1 ) {
-                    var methodName = camelCase('set-'+key);
+                if( config_properties.indexOf(_key) !== -1 ) {
+                    var methodName = camelCase('set-'+_key);
                     
                     self[methodName](value, _private(that)._config);
                 }
@@ -1331,9 +1336,9 @@ function $grecaptchaProvider($greLanguageCodes) {
          */
         $grecaptcha.getGrecaptcha = function() {
             return _grecaptcha;
-        }
+        };
         
         
         return $grecaptcha;
-    }
+    };
 }

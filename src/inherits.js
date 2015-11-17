@@ -1,7 +1,7 @@
 /**
  * @from https://github.com/isaacs/inherits
  */
-function inherits(ctor, superCtor) {
+function inherits(ctor, superCtor) { /*jshint ignore:line */
     ctor.super_ = superCtor;
     ctor.prototype = Object.create(superCtor.prototype, {
         constructor: {

@@ -326,7 +326,7 @@
   
   (from {@link https://developers.google.com/recaptcha/docs/language google recaptcha official site})
  **/
-var $greLanguageCodes = {
+var $greLanguageCodes = { /*jshint ignore:line */
     "ar"        : "Arabic"
 ,   "af"        : "Afrikaans"
 ,   "am"        : "Amharic"

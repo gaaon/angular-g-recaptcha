@@ -1,4 +1,4 @@
-function TinyEmitterFactory() {
+function TinyEmitterFactory() { /*jshint ignore:line */
     /**
      *  This code is made by scottcorgan.
      * 

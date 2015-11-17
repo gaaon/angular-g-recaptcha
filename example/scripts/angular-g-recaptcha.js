@@ -6,6 +6,11 @@
  */
 (function(window, angular){
 
+/* global
+  angular,
+  document
+*/
+
 /**
  * Checks if `obj` is a scope object.
  *
@@ -107,7 +112,7 @@ function toDebugString(obj) {
  * @private
  * @from angularjs source code for error handler
  **/
-function minErr(module, ErrorConstructor) { // from angularjs source code
+function minErr(module, ErrorConstructor) { /*jshint ignore:line */
   ErrorConstructor = ErrorConstructor || Error;
   return function() {
     var SKIP_INDEXES = 2;
@@ -115,8 +120,8 @@ function minErr(module, ErrorConstructor) { // from angularjs source code
     var templateArgs = arguments,
       code = templateArgs[0],
       message = '[' + (module ? module + ':' : '') + code + '] ',
-      template = templateArgs[1],
-      paramPrefix, i;
+      template = templateArgs[1];
+      //paramPrefix, i
     
     message += template.replace(/\{\d+\}/g, function(match) {
       var index = +match.slice(1, -1),
@@ -147,7 +152,7 @@ function minErr(module, ErrorConstructor) { // from angularjs source code
 /**
  * @from https://github.com/isaacs/inherits
  */
-function inherits(ctor, superCtor) {
+function inherits(ctor, superCtor) { /*jshint ignore:line */
     ctor.super_ = superCtor;
     ctor.prototype = Object.create(superCtor.prototype, {
         constructor: {
@@ -160,6 +165,11 @@ function inherits(ctor, superCtor) {
 }
 
 
+/* global
+    angular,
+    minErr,
+    inherits
+ */
 var $greMinErr = minErr('$grecaptcha');
 
 /**
@@ -173,14 +183,14 @@ var $greMinErr = minErr('$grecaptcha');
  * Provider for $grecaptcha service
  * 
  **/
-function $grecaptchaProvider($greLanguageCodes) {
+function $grecaptchaProvider($greLanguageCodes) { /*jshint ignore:line */
     
     var _grecaptcha                 // grecaptcha Object
     ,   _languageCode               // languageCode value
     ,   _scriptTag                  // tag that contains recaptcha script
     ,   _scriptLoadTimeout = 5000   // miliseconds of load time out
     ,   self = this                 // this reference
-    ,   init_promise = undefined    // a promise of init method                 
+    ,   init_promise                // a promise of init method                 
                 
     // method name of recaptcha script callback
     ,   _onLoadMethodName = "onRecaptchaApiLoaded"
@@ -737,22 +747,22 @@ function $grecaptchaProvider($greLanguageCodes) {
         }
         
         else if( angular.isString(args[0]) ) {
-            var key = args[0], value = args[1];
+            var _key = args[0], value = args[1];
             
             
-            if( provider_properties.indexOf(key) !== -1 ) {
-                var methodName = camelCase('set-'+key);
+            if( provider_properties.indexOf(_key) !== -1 ) {
+                var methodName = camelCase('set-'+_key);
                 
                 that[methodName](value);
             }
             else {
                 throw new $greMinErr('setnosuchkey', 
-                    'There is no such key {0} in {1}.', key, provider_properties);
+                    'There is no such key {0} in {1}.', _key, provider_properties);
             }
         }
         
         return self;
-    }
+    };
 
     
     
@@ -813,7 +823,7 @@ function $grecaptchaProvider($greLanguageCodes) {
             throw new $greMinErr('getnosuchkey', 
                 'There is no such key {0} in {1}.', key, provider_properties);
         }
-    }
+    };
     
     
     /**
@@ -824,9 +834,9 @@ function $grecaptchaProvider($greLanguageCodes) {
      * so that init grecaptcha Object
      */
     function createScript($document){
-        var src = "//www.google.com/recaptcha/api.js?render=explicit&"
-                +"onload="+_onLoadMethodName
-                +(_languageCode ? "&hl="+_languageCode : "");
+        var src = "//www.google.com/recaptcha/api.js?render=explicit&"+
+                "onload="+_onLoadMethodName+
+                (_languageCode ? "&hl="+_languageCode : "");
             
         var option = {
             type    : "text/javascript"
@@ -1051,7 +1061,7 @@ function $grecaptchaProvider($greLanguageCodes) {
          */
         gre.prototype.getWidgetId = function() {
             return _private(this)._widgetId;
-        }
+        };
         
         
         
@@ -1210,7 +1220,7 @@ function $grecaptchaProvider($greLanguageCodes) {
                 throw new greMinErr('badel', 'The element is invalid.');
             }
             
-            if( internal._config['sitekey'] === void 0 ) {
+            if( internal._config.sitekey === void 0 ) {
                 throw new greMinErr('nositekey', 'The sitekey has to be provided.');
             }
             
@@ -1227,7 +1237,7 @@ function $grecaptchaProvider($greLanguageCodes) {
                     promise.catch(function(reason){
                         throw new Error(reason);
                     });
-                }
+                };
                 
                 return ret;
             }
@@ -1237,7 +1247,7 @@ function $grecaptchaProvider($greLanguageCodes) {
                 
                 
                 angular.extend(config, {
-                    callback: wrap(config['callback']), 
+                    callback: wrap(config.callback), 
                     'expired-callback': wrap(config['expired-callback'])
                     
                 });
@@ -1315,10 +1325,10 @@ function $grecaptchaProvider($greLanguageCodes) {
             }
             
             else if( angular.isString(args[0]) ) {
-                var key = args[0], value = args[1];
+                var _key = args[0], value = args[1];
                 
-                if( config_properties.indexOf(key) !== -1 ) {
-                    var methodName = camelCase('set-'+key);
+                if( config_properties.indexOf(_key) !== -1 ) {
+                    var methodName = camelCase('set-'+_key);
                     
                     self[methodName](value, _private(that)._config);
                 }
@@ -1493,11 +1503,11 @@ function $grecaptchaProvider($greLanguageCodes) {
          */
         $grecaptcha.getGrecaptcha = function() {
             return _grecaptcha;
-        }
+        };
         
         
         return $grecaptcha;
-    }]
+    }];
 }
 $grecaptchaProvider.$inject = ["$greLanguageCodes"];
 
@@ -1830,7 +1840,7 @@ $grecaptchaProvider.$inject = ["$greLanguageCodes"];
   
   (from {@link https://developers.google.com/recaptcha/docs/language google recaptcha official site})
  **/
-var $greLanguageCodes = {
+var $greLanguageCodes = { /*jshint ignore:line */
     "ar"        : "Arabic"
 ,   "af"        : "Afrikaans"
 ,   "am"        : "Amharic"
@@ -1904,7 +1914,7 @@ var $greLanguageCodes = {
 };
 
 
-function TinyEmitterFactory() {
+function TinyEmitterFactory() { /*jshint ignore:line */
     /**
      *  This code is made by scottcorgan.
      * 
@@ -2062,8 +2072,10 @@ function TinyEmitterFactory() {
         </file>
     </example>
  */
-function grecaptchaDirective($grecaptcha, $parse, $document){
-    
+/* global
+    angular
+*/
+function grecaptchaDirective($grecaptcha, $parse, $document){ /*jshint ignore:line */
     var directiveDefinitionObject = {
         strict: 'A',
         require: '^ngModel',
@@ -2075,7 +2087,7 @@ function grecaptchaDirective($grecaptcha, $parse, $document){
             scope.info || (scope.info = {});   
             //This will not cause any side effect. Just for preventing undefined error at below
             
-            var param = $parse(attr['grecaptcha'] || '{}')(scope);
+            var param = $parse(attr.grecaptcha || '{}')(scope);
             var gre = $grecaptcha(param);
             
             function setViewValue(res) {
@@ -2113,6 +2125,14 @@ function grecaptchaDirective($grecaptcha, $parse, $document){
 grecaptchaDirective.$inject = ["$grecaptcha", "$parse", "$document"];
 
 
+/* global
+    angular,
+    $greLanguageCodes,
+    $grecaptchaProvider,
+    grecaptchaDirective,
+    TinyEmitterFactory
+*/
+
 /**
  * @ngdoc overview
  * @name wo.grecaptcha
@@ -2120,7 +2140,7 @@ grecaptchaDirective.$inject = ["$grecaptcha", "$parse", "$document"];
  * @description
  * A module for grecaptcha
  */
-var app = angular.module('wo.grecaptcha', [])
+var app = angular.module('wo.grecaptcha', []) /*jshint ignore:line */
 .constant('$greLanguageCodes', $greLanguageCodes)
 .provider('$grecaptcha', $grecaptchaProvider)
 .directive('grecaptcha', grecaptchaDirective)

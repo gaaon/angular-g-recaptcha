@@ -1,3 +1,5 @@
+/* jshint unused: false
+*/
 function AngularEmitterFactory($rootScope) {
     function AngularEmitter () {
     }
@@ -47,9 +49,7 @@ function AngularEmitterFactory($rootScope) {
             }
             
             
-            (liveEvents.length)
-            ? e[name] = liveEvents
-            : delete e[name];
+            (liveEvents.length) ? e[name] = liveEvents : delete e[name];
         
             return this;
         },
@@ -70,7 +70,7 @@ function AngularEmitterFactory($rootScope) {
                 for(var j = 0 ; j < that.e[name].length ; j++) {
                     that.e[name][j]();
                 }
-            };
+            }
             
             
             delete this.e;

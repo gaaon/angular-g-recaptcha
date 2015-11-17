@@ -126,7 +126,8 @@ gulp.task('watch', ['browserSync:init'], function() {
 });
 
 
-gulp.task('test', ['build'], function (done) {
+
+gulp.task('test', ['build', 'lint'], function (done) {
     new karma({
         configFile: __dirname + '/karma.conf.js',
         browsers: ['PhantomJS'],
@@ -135,6 +136,15 @@ gulp.task('test', ['build'], function (done) {
             done();
         }
     ).start();
+});
+
+
+
+gulp.task('lint', ['build'], function (){
+    return gulp.src('./src/**/*.js')
+    .pipe($.jshint())
+    .pipe($.jshint.reporter('default'))
+    .pipe($.jshint.reporter('fail'));
 });
 
 

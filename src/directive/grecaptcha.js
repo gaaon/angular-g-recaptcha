@@ -56,8 +56,10 @@
         </file>
     </example>
  */
-function grecaptchaDirective($grecaptcha, $parse, $document){
-    
+/* global
+    angular
+*/
+function grecaptchaDirective($grecaptcha, $parse, $document){ /*jshint ignore:line */
     var directiveDefinitionObject = {
         strict: 'A',
         require: '^ngModel',
@@ -69,7 +71,7 @@ function grecaptchaDirective($grecaptcha, $parse, $document){
             scope.info || (scope.info = {});   
             //This will not cause any side effect. Just for preventing undefined error at below
             
-            var param = $parse(attr['grecaptcha'] || '{}')(scope);
+            var param = $parse(attr.grecaptcha || '{}')(scope);
             var gre = $grecaptcha(param);
             
             function setViewValue(res) {
