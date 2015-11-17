@@ -3,7 +3,8 @@ node_js:
   - "0.12"
   
 before_script:
-  - npm install -g gulp
+  - npm install -g gulp bower
   - export PHANTOMJS_BIN=/usr/local/phantomjs/bin/phantomjs
+  - bower install
   
 script: gulp test
