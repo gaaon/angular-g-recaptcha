@@ -1,4 +1,4 @@
-# angular-g-recaptcha
+# angular-g-recaptcha [![Build Status](https://travis-ci.org/Wooooo/angular-g-recaptcha.svg?branch=master)](https://travis-ci.org/Wooooo/angular-g-recaptcha) [![Coverage Status](https://coveralls.io/repos/Wooooo/angular-g-recaptcha/badge.svg?branch=master&service=github)](https://coveralls.io/github/Wooooo/angular-g-recaptcha?branch=master)
 Angular module for google recaptcha
 
 ---
