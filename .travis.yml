@@ -6,7 +6,7 @@ sudo: false
 cache:
   directories:
     - node_modules
-    
+    - bower_components
 before_script:
   - npm install -g gulp bower
   - export PHANTOMJS_BIN=/usr/local/phantomjs/bin/phantomjs
